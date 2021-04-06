@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.6.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.4.4")
     }
 }
 
@@ -41,7 +41,7 @@ dependencies {
     compile(name:'TripPricer', ext:'jar')
     
     testCompile("junit:junit")
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.6.RELEASE'
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.4'
 }
 
 
@@ -71,3 +71,9 @@ jacocoTestCoverageVerification {
     }
   }
 }
+
+//https://www.baeldung.com/gradle-dependency-management
+//https://tomgregory.com/how-to-update-gradle/
+//To access gradle version: gradlew --version
+//to update gradle: gradlew wrapper --gradle-version 5.5
+//4.8.1 initial gradle
