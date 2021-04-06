@@ -47,24 +47,30 @@ public class TestPerformance {
 	 *          assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	 */
 
+	@BeforeAll
+	public void beforeAll(){
+		Locale.setDefault(new Locale("en", "US"));
+	}
+
+	@Order(1)
 	@Test
-	public void parseDouble(){
-		//Locale.setDefault(new Locale("en", "US"));
+	public void gpsUtil_getUserLocation_parseDouble(){
 		double numberDecimal = -162.7119212345678;
 		String number =  String.format("%.6f", numberDecimal);
 		//Java uses my Locale's decimal separator (a comma) while I would like to use a point
 		//https://stackoverflow.com/questions/5236056/force-point-as-decimal-separator-in-java
-		String number2 = "-162.711921";
+		//String number2 = "-162.711921";
 		Double.parseDouble(number);
 	}
 	
-	@Disabled
+	//@Disabled
+	@Order(2)
 	@Test
 	public void highVolumeTrackLocation() {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
-		InternalTestHelper.setInternalUserNumber(10);
+		InternalTestHelper.setInternalUserNumber(100);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
 		List<User> allUsers = new ArrayList<>();
@@ -83,6 +89,7 @@ public class TestPerformance {
 	}
 	
 	@Disabled
+	@Order(3)
 	@Test
 	public void highVolumeGetRewards() {
 		GpsUtil gpsUtil = new GpsUtil();
@@ -98,9 +105,9 @@ public class TestPerformance {
 		List<User> allUsers = new ArrayList<>();
 		allUsers = tourGuideService.getAllUsers();
 		allUsers.forEach(u -> u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date())));
-	     
+
 	    allUsers.forEach(u -> rewardsService.calculateRewards(u));
-	    
+
 		for(User user : allUsers) {
 			assertTrue(user.getUserRewards().size() > 0);
 		}
