@@ -46,6 +46,8 @@ dependencies {
     compile(name:'TripPricer', ext:'jar')
 
     testCompile("junit:junit")
+    //Run JUnit Test 4 with JUnit 5 // https://howtodoinjava.com/junit5/junit-5-gradle-dependency-build-gradle-example/
+    testRuntime("org.junit.vintage:junit-vintage-engine")
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.4'
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.1' //https://javabydeveloper.com/junit-5-with-gradle-configuration-with-an-example/
@@ -60,9 +62,10 @@ test {
     dependsOn 'cleanTest'
 
     // Show test results.
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
+    //testLogging {
+    //    events "passed", "skipped", "failed"
+    //}
+    systemProperty "file.encoding", "utf-8" //https://askcodez.com/afficher-du-texte-utf-8-correctement-dans-gradle.html
 }
 
 jacoco {
