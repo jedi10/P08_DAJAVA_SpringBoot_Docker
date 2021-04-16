@@ -50,7 +50,7 @@ public class TestPerformance {
 	@BeforeAll
 	public void beforeAll(){
 		Locale.setDefault(new Locale("en", "US"));
-	}
+}
 
 	@Order(1)
 	@Test
@@ -59,7 +59,9 @@ public class TestPerformance {
 		String number =  String.format("%.6f", numberDecimal);
 		//Java uses my Locale's decimal separator (a comma) while I would like to use a point
 		//https://stackoverflow.com/questions/5236056/force-point-as-decimal-separator-in-java
-		//String number2 = "-162.711921";
+		//String number2 = "-162,711921";
+		//https://mkyong.com/java/java-convert-string-to-double/
+		//number2 = Double.parseDouble(number2.replace(",", "."));
 		Double.parseDouble(number);
 	}
 	
