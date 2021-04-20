@@ -3,7 +3,8 @@ package tourGuide;
 import static org.junit.Assert.assertTrue;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.time.StopWatch;
 //import org.junit.Ignore;
@@ -14,6 +15,8 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.boot.test.context.SpringBootTest;
 import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
@@ -26,6 +29,8 @@ import tourGuide.user.UserReward;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestPerformance {
+
+	private ExecutorService executorService;
 	
 	/*
 	 * A note on performance improvements:
@@ -49,8 +54,14 @@ public class TestPerformance {
 
 	@BeforeAll
 	public void beforeAll(){
+		//this.executorService = Executors.newFixedThreadPool(100);
 		Locale.setDefault(new Locale("en", "US"));
-}
+    }
+
+    @AfterAll
+	public void afterAll(){
+		//this.executorService.shutdown();
+	}
 
 	@Order(1)
 	@Test
@@ -67,27 +78,75 @@ public class TestPerformance {
 	
 	//@Disabled
 	@Order(2)
-	@Test
-	public void highVolumeTrackLocation() {
+	@DisplayName("Track Location")
+	@ParameterizedTest(name = "For {0} User(s)")
+	@CsvSource({"100"})
+	public void highVolumeTrackLocation(int userNumber) {
+		this.executorService = Executors.newFixedThreadPool(userNumber);
+		Locale.setDefault(new Locale("en", "US"));
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
-		InternalTestHelper.setInternalUserNumber(100);
+		InternalTestHelper.setInternalUserNumber(userNumber);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
 		List<User> allUsers = new ArrayList<>();
 		allUsers = tourGuideService.getAllUsers();
+		List<User> finalAllUsers = allUsers;
+		int midIndex = (((allUsers.size()) / 2) - 1);
+		List<List<User> > lists = new ArrayList<>(
+				allUsers.stream()
+						.collect(Collectors.partitioningBy(s -> finalAllUsers.indexOf(s) > midIndex))  //https://www.geeksforgeeks.org/split-a-list-into-two-halves-in-java/
+						.values());
+
+
+		List<User> userList1 = lists.get(0);
+		List<User> userList2 = lists.get(1);
 		
 	    StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		for(User user : allUsers) {
-			tourGuideService.trackUserLocation(user);
+		//List<VisitedLocation> visitedLocationList = new ArrayList<>();
+		List<String> passedUserList = new ArrayList<>();
+		for(int i = 0; i<userNumber/2 ; i++ ) {
+			int counterNumber = i;
+			//Future<VisitedLocation> futureVisitedService1 =
+					executorService.submit(()-> {
+						//System.out.println("Passed for "+ userList1.get(counterNumber).getUserName());
+						return tourGuideService.trackUserLocation(userList1.get(counterNumber));
+					}
+			);
+			//Future<VisitedLocation> futureVisitedService2 =
+					executorService.submit(()-> {
+						//System.out.println("Passed for "+ userList2.get(counterNumber).getUserName());
+						return tourGuideService.trackUserLocation(userList2.get(counterNumber));
+					}
+			);
+			passedUserList.add(userList1.get(counterNumber).getUserName());
+			passedUserList.add(userList2.get(counterNumber).getUserName());
+			/*VisitedLocation visitedLocation = null;
+			try {
+				visitedLocationList.add(futureVisitedService1.get());
+				visitedLocationList.add(futureVisitedService2.get());
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			} finally {
+				assertTrue(visitedLocationList.size()== 100);
+			}*/
 		}
 		stopWatch.stop();
 		tourGuideService.tracker.stopTracking();
+		/*
+		try {
+			this.executorService.awaitTermination(15, TimeUnit.MINUTES);
+			//tourGuideService.shutDownExecutorService();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}*/
 
 		System.out.println("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
 		assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
+		assertTrue(passedUserList.size() == userNumber);
+		this.executorService.shutdown();
 	}
 	
 	@Disabled
@@ -121,3 +180,7 @@ public class TestPerformance {
 	}
 	
 }
+
+
+
+//https://techvidvan.com/tutorials/java-executorservice/
