@@ -2,9 +2,9 @@ package tourGuide.service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -36,7 +36,7 @@ public class TourGuideService {
 	public final Tracker tracker;
 	boolean testMode = true;
 	
-	public static int incrementalCounter = 0;
+	public static final AtomicInteger incrementalCounter = new AtomicInteger(0);
 	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
 		this.gpsUtil = gpsUtil;
 		this.rewardsService = rewardsService;
@@ -85,7 +85,8 @@ public class TourGuideService {
 	}
 	
 	public VisitedLocation trackUserLocation(User user) {
-		incrementalCounter+=1;
+		/*VisitedLocation visitedLocation = null;
+		incrementalCounter.addAndGet(1);
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 		user.addToVisitedLocations(visitedLocation);
 		rewardsService.calculateRewards(user);
