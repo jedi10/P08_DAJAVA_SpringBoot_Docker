@@ -22,6 +22,7 @@ import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
+import tourGuide.tool.ListTools;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 
@@ -54,13 +55,13 @@ public class TestPerformance {
 
 	@BeforeAll
 	public void beforeAll(){
-		//this.executorService = Executors.newFixedThreadPool(100);
+		this.executorService = Executors.newFixedThreadPool(100);
 		Locale.setDefault(new Locale("en", "US"));
     }
 
     @AfterAll
 	public void afterAll(){
-		//this.executorService.shutdown();
+		this.executorService.shutdown();
 	}
 
 	@Order(1)
@@ -75,6 +76,31 @@ public class TestPerformance {
 		//number2 = Double.parseDouble(number2.replace(",", "."));
 		Double.parseDouble(number);
 	}
+
+	@Disabled
+	@Order(2)
+	@Test
+	public void highVolumeTrackLocation() {
+		GpsUtil gpsUtil = new GpsUtil();
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		// Users should be incremented up to 100,000, and test finishes within 15 minutes
+		InternalTestHelper.setInternalUserNumber(100);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+
+		List<User> allUsers = new ArrayList<>();
+		allUsers = tourGuideService.getAllUsers();
+
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		for(User user : allUsers) {
+			tourGuideService.trackUserLocation(user);
+		}
+		stopWatch.stop();
+		tourGuideService.tracker.stopTracking();
+
+		System.out.println("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
+		assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
+	}
 	
 	//@Disabled
 	@Order(2)
@@ -82,7 +108,7 @@ public class TestPerformance {
 	@ParameterizedTest(name = "For {0} User(s)")
 	@CsvSource({"100"})
 	public void highVolumeTrackLocation(int userNumber) {
-		this.executorService = Executors.newFixedThreadPool(userNumber);
+		//this.executorService = Executors.newFixedThreadPool(userNumber);
 		Locale.setDefault(new Locale("en", "US"));
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
@@ -92,13 +118,8 @@ public class TestPerformance {
 
 		List<User> allUsers = new ArrayList<>();
 		allUsers = tourGuideService.getAllUsers();
-		List<User> finalAllUsers = allUsers;
-		int midIndex = (((allUsers.size()) / 2) - 1);
-		List<List<User> > lists = new ArrayList<>(
-				allUsers.stream()
-						.collect(Collectors.partitioningBy(s -> finalAllUsers.indexOf(s) > midIndex))  //https://www.geeksforgeeks.org/split-a-list-into-two-halves-in-java/
-						.values());
 
+		List<List<User> > lists = ListTools.switchUserList(allUsers);
 
 		List<User> userList1 = lists.get(0);
 		List<User> userList2 = lists.get(1);
@@ -109,6 +130,11 @@ public class TestPerformance {
 		List<String> passedUserList = new ArrayList<>();
 		for(int i = 0; i<userNumber/2 ; i++ ) {
 			int counterNumber = i;
+			/*executorService.submit(()-> {
+						//System.out.println("Passed for "+ userList1.get(counterNumber).getUserName());
+						return tourGuideService.trackUserLocation(finalAllUsers.get(counterNumber));
+					}
+			);*/
 			//Future<VisitedLocation> futureVisitedService1 =
 					executorService.submit(()-> {
 						//System.out.println("Passed for "+ userList1.get(counterNumber).getUserName());
@@ -146,6 +172,7 @@ public class TestPerformance {
 		System.out.println("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
 		assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 		assertTrue(passedUserList.size() == userNumber);
+		assertTrue(TourGuideService.incrementalCounter == userNumber);
 		this.executorService.shutdown();
 	}
 	
@@ -153,6 +180,7 @@ public class TestPerformance {
 	@Order(3)
 	@Test
 	public void highVolumeGetRewards() {
+		//GIVEN
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
@@ -169,9 +197,11 @@ public class TestPerformance {
 
 	    allUsers.forEach(u -> rewardsService.calculateRewards(u));
 
+	    //WHEN
 		for(User user : allUsers) {
 			assertTrue(user.getUserRewards().size() > 0);
 		}
+		//THEN
 		stopWatch.stop();
 		tourGuideService.tracker.stopTracking();
 

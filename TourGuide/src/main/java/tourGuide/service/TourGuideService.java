@@ -36,6 +36,7 @@ public class TourGuideService {
 	public final Tracker tracker;
 	boolean testMode = true;
 	
+	public static int incrementalCounter = 0;
 	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
 		this.gpsUtil = gpsUtil;
 		this.rewardsService = rewardsService;
@@ -84,6 +85,7 @@ public class TourGuideService {
 	}
 	
 	public VisitedLocation trackUserLocation(User user) {
+		incrementalCounter+=1;
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 		user.addToVisitedLocations(visitedLocation);
 		rewardsService.calculateRewards(user);
