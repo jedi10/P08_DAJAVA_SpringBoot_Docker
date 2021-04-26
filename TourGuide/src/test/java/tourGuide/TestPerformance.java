@@ -79,9 +79,10 @@ public class TestPerformance {
 	}
 
 	//@Disabled
+	@Order(2)
 	@DisplayName("Track Location")
 	@ParameterizedTest(name = "For {0} User(s)")
-	@CsvSource({"10000"})
+	@CsvSource({"100000"})//,"1000","5000","10000","50000","100000"})
 	public void highVolumeTrackLocation(int userNumber) {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
@@ -94,7 +95,7 @@ public class TestPerformance {
 
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		tourGuideService.trackUserLocationPerformance(allUsers);
+		tourGuideService.trackUserLocationUserList(allUsers);
 		//for(User user : allUsers) {
 		//	tourGuideService.trackUserLocation(user);
 		//}
@@ -104,7 +105,7 @@ public class TestPerformance {
 
 		System.out.println("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
 		assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
-		System.out.println("Users Number processed: "+ incrementalUser.toString());
+		//System.out.println("Users Number processed: "+ incrementalUser.toString());
 	}
 	
 	@Disabled

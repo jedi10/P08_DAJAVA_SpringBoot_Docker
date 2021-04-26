@@ -36,12 +36,21 @@ public class TourGuideService {
 	public static int incr = 0;
 	public static final AtomicInteger incrementalCounter = new AtomicInteger(0);
 
-	public void shutDownExecutorService() throws InterruptedException {
-		if (executorService.isTerminated()){
-			executorService.shutdown();
+	public void shutDownExecutorService() {
+
+		executorService.shutdown();//https://howtodoinjava.com/java/multi-threading/executorservice-shutdown/
+		try {
+			boolean executorHasFinished = executorService.awaitTermination(15, TimeUnit.MINUTES);
+			if (!executorHasFinished) {
+				logger.error("trackUserLocationforUserList does not finish in 15 minutes elapsed time");
+				executorService.shutdownNow();
+			} else {
+				logger.debug("trackUserLocationforUserList finished before the 15 minutes elapsed time");
+			}
+		} catch (InterruptedException interruptedException) {
+			logger.error("executorService was Interrupted : " + interruptedException.getLocalizedMessage());
+			executorService.shutdownNow();
 		}
-		//executorService.shutdown();
-		//executorService.awaitTermination(15, TimeUnit.MINUTES);
 	}
 	
 	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
@@ -97,13 +106,13 @@ public class TourGuideService {
 	 * Tested by TestPerformance
 	 * @param userList userList is mandatory
 	 */
-	public void trackUserLocationPerformance(List<User> userList){
+	public void trackUserLocationUserList(List<User> userList){
 
-		for(User user : userList) {
-			Runnable runnableTask = () -> trackUserLocation(user);
-			//Future<VisitedLocation> futureVisitedService =
-			executorService.submit(()->	runnableTask);
-			//System.out.println("Passed for "+ user.getUserName());
+		userList.parallelStream().forEach(
+				(user) -> {
+					Runnable runnableTask = () -> trackUserLocation(user);
+					//Future<VisitedLocation> futureVisitedService =
+					executorService.submit(()->	runnableTask);
 			/*VisitedLocation visitedLocation = null;
 			try {
 				visitedLocation = futureVisitedService.get();
@@ -111,29 +120,9 @@ public class TourGuideService {
 				e.printStackTrace();
 			} finally {
 			}*/
-
-			/*VisitedLocation visitedLocation = null;
-		executorService.execute(new Runnable() {
-			User user;
-			TourGuideService userService;
-
-			public void run() {
-				this.userService.trackUserLocation(this.user);
-				System.out.println("ok passed");
-			}
-
-			public Runnable init(TourGuideService userService, User user) {
-				this.userService = userService;
-				this.user = user;
-				return this;
-			}
-		}.init(this, user));*/
-		}
-		try {
-			shutDownExecutorService();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+				}
+		);
+		shutDownExecutorService();
 	}
 
 	public VisitedLocation trackUserLocation(User user) {
