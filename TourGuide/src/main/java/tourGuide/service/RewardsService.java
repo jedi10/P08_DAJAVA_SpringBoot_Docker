@@ -52,8 +52,6 @@ public class RewardsService {
 				}
 			});
 		});
-			}
-		}
 	}
 	
 	public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
