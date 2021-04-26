@@ -5,10 +5,6 @@ import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -35,11 +31,24 @@ public class TourGuideService {
 	private final TripPricer tripPricer = new TripPricer();
 	public final Tracker tracker;
 	boolean testMode = true;
-	
+	private ExecutorService executorService;
+
+	public static int incr = 0;
 	public static final AtomicInteger incrementalCounter = new AtomicInteger(0);
+
+	public void shutDownExecutorService() throws InterruptedException {
+		if (executorService.isTerminated()){
+			executorService.shutdown();
+		}
+		//executorService.shutdown();
+		//executorService.awaitTermination(15, TimeUnit.MINUTES);
+	}
+	
 	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
 		this.gpsUtil = gpsUtil;
 		this.rewardsService = rewardsService;
+		this.executorService = Executors.newFixedThreadPool(1500);//.newCachedThreadPool()
+		Locale.setDefault(new Locale("en", "US"));
 		
 		if(testMode) {
 			logger.info("TestMode enabled");
@@ -83,13 +92,62 @@ public class TourGuideService {
 		user.setTripDeals(providers);
 		return providers;
 	}
-	
+
+	/**
+	 * Tested by TestPerformance
+	 * @param userList userList is mandatory
+	 */
+	public void trackUserLocationPerformance(List<User> userList){
+
+		for(User user : userList) {
+			Runnable runnableTask = () -> trackUserLocation(user);
+			//Future<VisitedLocation> futureVisitedService =
+			executorService.submit(()->	runnableTask);
+			//System.out.println("Passed for "+ user.getUserName());
+			/*VisitedLocation visitedLocation = null;
+			try {
+				visitedLocation = futureVisitedService.get();
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			} finally {
+			}*/
+
+			/*VisitedLocation visitedLocation = null;
+		executorService.execute(new Runnable() {
+			User user;
+			TourGuideService userService;
+
+			public void run() {
+				this.userService.trackUserLocation(this.user);
+				System.out.println("ok passed");
+			}
+
+			public Runnable init(TourGuideService userService, User user) {
+				this.userService = userService;
+				this.user = user;
+				return this;
+			}
+		}.init(this, user));*/
+		}
+		try {
+			shutDownExecutorService();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public VisitedLocation trackUserLocation(User user) {
-		/*VisitedLocation visitedLocation = null;
-		incrementalCounter.addAndGet(1);
+		//Task1
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+		//Task2 - need visitedLocation to be created
 		user.addToVisitedLocations(visitedLocation);
+		//Task3 - need visited location to be referenced
 		rewardsService.calculateRewards(user);
+
+		//incr+=1;
+		//System.out.println(incr+" : Passed for: "+ user.getUserName());
+		incrementalCounter.addAndGet(1);
+		//System.out.println(incrementalCounter.get()+" : Passed for: "+ user.getUserName());
 		return visitedLocation;
 	}
 
@@ -157,3 +215,9 @@ public class TourGuideService {
 	}
 	
 }
+
+
+
+//https://techvidvan.com/tutorials/java-executorservice/
+//https://www.baeldung.com/java-executor-service-tutorial
+//https://openclassrooms.com/fr/courses/5684021-scale-up-your-code-with-java-concurrency/6542491-write-concurrent-applications-using-thread-pools-and-futures
