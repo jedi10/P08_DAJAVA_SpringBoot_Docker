@@ -18,6 +18,8 @@ import gpsUtil.location.VisitedLocation;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
@@ -31,6 +33,8 @@ import tourGuide.user.UserReward;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestPerformance {
+
+	private Logger logger = LoggerFactory.getLogger(TestPerformance.class);
 
 	private ExecutorService executorService;
 	
@@ -56,13 +60,25 @@ public class TestPerformance {
 
 	@BeforeAll
 	public void beforeAll(){
-		//this.executorService = Executors.newFixedThreadPool(100);
+		this.executorService = Executors.newFixedThreadPool(1500);
 		Locale.setDefault(new Locale("en", "US"));
     }
 
     @AfterAll
 	public void afterAll(){
-		//this.executorService.shutdown();
+		this.executorService.shutdown();
+		/*try {
+			boolean executorHasFinished = executorService.awaitTermination(20, TimeUnit.MINUTES);
+			if (!executorHasFinished) {
+				logger.error("Test does not finish in 15 minutes elapsed time");
+				executorService.shutdownNow();
+			} else {
+				logger.debug("Test finished before the 15 minutes elapsed time");
+			}
+		} catch (InterruptedException interruptedException) {
+			logger.error("Test was Interrupted : " + interruptedException.getLocalizedMessage());
+			executorService.shutdownNow();
+		}*/
 	}
 
 	@Order(1)
@@ -82,7 +98,7 @@ public class TestPerformance {
 	@Order(2)
 	@DisplayName("Track Location")
 	@ParameterizedTest(name = "For {0} User(s)")
-	@CsvSource({"100000"})//,"1000","5000","10000","50000","100000"})
+	@CsvSource({"1000"})//,"1000","5000","10000","50000","100000"})
 	public void highVolumeTrackLocation(int userNumber) {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
@@ -108,16 +124,18 @@ public class TestPerformance {
 		//System.out.println("Users Number processed: "+ incrementalUser.toString());
 	}
 	
-	@Disabled
+	//@Disabled
 	@Order(3)
-	@Test
-	public void highVolumeGetRewards() {
+	@DisplayName("Track Reward")
+	@ParameterizedTest(name = "For {0} User(s)")
+	@CsvSource({"1000"})//,"1000","5000","10000","50000","100000"})
+	public void highVolumeGetRewards(int userNumber) {
 		//GIVEN
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
 		// Users should be incremented up to 100,000, and test finishes within 20 minutes
-		InternalTestHelper.setInternalUserNumber(100);
+		InternalTestHelper.setInternalUserNumber(userNumber);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
@@ -125,14 +143,19 @@ public class TestPerformance {
 	    Attraction attraction = gpsUtil.getAttractions().get(0);
 		List<User> allUsers = new ArrayList<>();
 		allUsers = tourGuideService.getAllUsers();
-		allUsers.forEach(u -> u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date())));
 
-	    allUsers.forEach(u -> rewardsService.calculateRewards(u));
-
-	    //WHEN
-		for(User user : allUsers) {
-			assertTrue(user.getUserRewards().size() > 0);
-		}
+		//WHEN
+		allUsers.parallelStream().forEach(
+				(user) -> {
+					Runnable runnableTask = () -> {
+						user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
+						rewardsService.calculateRewards(user);
+						assertTrue(user.getUserRewards().size() > 0);
+						System.out.println("ok passed");
+					};
+					//Future<VisitedLocation> futureVisitedService =
+					executorService.submit(()->	runnableTask);
+				});
 		//THEN
 		stopWatch.stop();
 		tourGuideService.tracker.stopTracking();
@@ -140,7 +163,41 @@ public class TestPerformance {
 		System.out.println("highVolumeGetRewards: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
 		assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	}
-	
+
+	@Disabled
+	@Order(3)
+	@DisplayName("Track Reward")
+	@ParameterizedTest(name = "For {0} User(s)")
+	@CsvSource({"100"})//,"1000","5000","10000","50000","100000"})
+	public void highVolumeGetRewards_old(int userNumber) {
+		//GIVEN
+		GpsUtil gpsUtil = new GpsUtil();
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+
+		// Users should be incremented up to 100,000, and test finishes within 20 minutes
+		InternalTestHelper.setInternalUserNumber(userNumber);
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+
+		Attraction attraction = gpsUtil.getAttractions().get(0);
+		List<User> allUsers = new ArrayList<>();
+		allUsers = tourGuideService.getAllUsers();
+		allUsers.forEach(u -> u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date())));
+
+		allUsers.forEach(u -> rewardsService.calculateRewards(u));
+
+		//WHEN
+		for(User user : allUsers) {
+			assertTrue(user.getUserRewards().size() > 0);
+		}
+		//THEN
+		stopWatch.stop();
+		tourGuideService.tracker.stopTracking();
+
+		System.out.println("highVolumeGetRewards: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
+		assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
+	}
 }
 
 
