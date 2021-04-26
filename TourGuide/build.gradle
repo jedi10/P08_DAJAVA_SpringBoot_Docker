@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.6.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.4.4")
     }
 }
 
@@ -29,6 +29,11 @@ repositories {
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
@@ -39,11 +44,30 @@ dependencies {
     compile(name:'gpsUtil', ext:'jar')
     compile(name:'RewardCentral', ext:'jar')
     compile(name:'TripPricer', ext:'jar')
-    
+
     testCompile("junit:junit")
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.6.RELEASE'
+    //Run JUnit Test 4 with JUnit 5 // https://howtodoinjava.com/junit5/junit-5-gradle-dependency-build-gradle-example/
+    testRuntime("org.junit.vintage:junit-vintage-engine")
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.4'
+
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.1' //https://javabydeveloper.com/junit-5-with-gradle-configuration-with-an-example/
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.1' //https://stackoverflow.com/questions/44429751/how-to-use-junit-5-with-gradle
+    testCompile("org.junit.jupiter:junit-jupiter-params:5.7.1")
 }
 
+test {
+    // Enable JUnit 5 (Gradle 4.6+).
+    useJUnitPlatform()
+
+    // Always run tests, even when nothing changed.
+    dependsOn 'cleanTest'
+
+    // Show test results.
+    //testLogging {
+    //    events "passed", "skipped", "failed"
+    //}
+    systemProperty "file.encoding", "utf-8" //https://askcodez.com/afficher-du-texte-utf-8-correctement-dans-gradle.html
+}
 
 jacoco {
     toolVersion = "0.8.4"
@@ -71,3 +95,10 @@ jacocoTestCoverageVerification {
     }
   }
 }
+
+//https://howtodoinjava.com/junit5/junit-5-gradle-dependency-build-gradle-example/
+//https://www.baeldung.com/gradle-dependency-management
+//https://tomgregory.com/how-to-update-gradle/
+//To access gradle version: gradlew --version
+//to update gradle: gradlew wrapper --gradle-version 5.5
+//4.8.1 initial gradle

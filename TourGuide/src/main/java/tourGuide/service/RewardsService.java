@@ -39,16 +39,19 @@ public class RewardsService {
 	public void calculateRewards(User user) {
 		List<VisitedLocation> userLocations = user.getVisitedLocations();
 		List<Attraction> attractions = gpsUtil.getAttractions();
-		
-		for(VisitedLocation visitedLocation : userLocations) {
-			for(Attraction attraction : attractions) {
-				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
+
+		userLocations.forEach((visitedLocation) -> {
+			attractions.forEach((attraction) -> {
+				//Task 1: make sure we don't already have attraction we work on
+				if(user.getUserRewards().parallelStream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
+					//Task 2: make sure attraction is in the area of the location we work on
 					if(nearAttraction(visitedLocation, attraction)) {
+						//Task 3: add rewards
 						user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
 					}
 				}
-			}
-		}
+			});
+		});
 	}
 	
 	public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
