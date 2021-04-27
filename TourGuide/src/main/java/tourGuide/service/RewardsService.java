@@ -12,6 +12,8 @@ import rewardCentral.RewardCentral;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+
 @Service
 public class RewardsService {
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
@@ -37,8 +39,11 @@ public class RewardsService {
 	}
 	
 	public void calculateRewards(User user) {
-		List<VisitedLocation> userLocations = user.getVisitedLocations();
-		List<Attraction> attractions = gpsUtil.getAttractions();
+		//to avoid throw ConcurrentModificationException https://devstory.net/13641/java-copyonwritearraylist
+		CopyOnWriteArrayList<Attraction> attractions = new CopyOnWriteArrayList<>();
+		CopyOnWriteArrayList<VisitedLocation> userLocations = new CopyOnWriteArrayList<>();
+		attractions.addAll(gpsUtil.getAttractions());
+		userLocations.addAll(user.getVisitedLocations());
 
 		userLocations.forEach((visitedLocation) -> {
 			attractions.forEach((attraction) -> {

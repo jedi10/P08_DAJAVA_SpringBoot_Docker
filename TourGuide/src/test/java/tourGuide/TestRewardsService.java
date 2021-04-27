@@ -46,7 +46,7 @@ public class TestRewardsService {
 		assertTrue(rewardsService.isWithinAttractionProximity(attraction, attraction));
 	}
 	
-	@Ignore // Needs fixed - can throw ConcurrentModificationException
+	//@Ignore
 	@Test
 	public void nearAllAttractions() {
 		GpsUtil gpsUtil = new GpsUtil();
@@ -55,10 +55,12 @@ public class TestRewardsService {
 
 		InternalTestHelper.setInternalUserNumber(1);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
-		
-		rewardsService.calculateRewards(tourGuideService.getAllUsers().get(0));
-		List<UserReward> userRewards = tourGuideService.getUserRewards(tourGuideService.getAllUsers().get(0));
+		User userGiven = tourGuideService.getAllUsers().get(0);
 		tourGuideService.tracker.stopTracking();
+		//WHEN
+		rewardsService.calculateRewards(userGiven);//can throw ConcurrentModificationException Fixed with CopyOnWriteArrayList
+		List<UserReward> userRewards = tourGuideService.getUserRewards(userGiven);
+		//THEN
 
 		assertEquals(gpsUtil.getAttractions().size(), userRewards.size());
 	}
