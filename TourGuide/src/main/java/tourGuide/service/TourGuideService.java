@@ -140,6 +140,12 @@ public class TourGuideService {
 		return visitedLocation;
 	}
 
+	/**
+	 * <b>return 5 Attractions</b>
+	 * <p>Ajouter les 5 attractions les plus proches par rapport au dernier emplacement de l'utilisateur peu importe leur distance.</p>
+	 * @param visitedLocation mandatory param
+	 * @return a list of Attraction
+	 */
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
 		List<Attraction> nearbyAttractions = new ArrayList<>();
 		for(Attraction attraction : gpsUtil.getAttractions()) {
