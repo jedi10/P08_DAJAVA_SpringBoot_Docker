@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import gpsUtil.GpsUtil;
@@ -16,7 +15,7 @@ import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
-import tourGuide.user.User;
+import tourGuide.domain.User;
 import tripPricer.Provider;
 
 public class TestTourGuideService {
@@ -98,10 +97,10 @@ public class TestTourGuideService {
 		//GIVEN
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
-		InternalTestHelper.setInternalUserNumber(1);
+		InternalTestHelper.setInternalUserNumber(10);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 		
-		User user = new User(UUID.randomUUID(), "internalUser0", "000", "jon@tourGuide.com");
+		User user = new User(UUID.randomUUID(), "internalUser1", "000", "jon@tourGuide.com");
 
 		//WHEN
 		List<Attraction> attractions = tourGuideService.getNearByAttractions(user);

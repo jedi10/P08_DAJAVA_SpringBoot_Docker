@@ -16,10 +16,11 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import tourGuide.domain.NearByAttraction;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
-import tourGuide.user.User;
-import tourGuide.user.UserReward;
+import tourGuide.domain.User;
+import tourGuide.domain.UserReward;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 
@@ -149,14 +150,20 @@ public class TourGuideService {
 	public List<Attraction> getNearByAttractions(User user) {
 		VisitedLocation visitedLocation = this.getUserLocation(user);
 
-		List<Attraction> nearbyAttractions = new ArrayList<>();
+		List<Attraction> result = new ArrayList<>();
+
+		List<NearByAttraction> nearbyAttractions = new ArrayList<>();
+
 		for(Attraction attraction : gpsUtil.getAttractions()) {
-			if(rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
-				nearbyAttractions.add(attraction);
-			}
+			Double distance = rewardsService.getDistance(
+					new Location(attraction.longitude, attraction.latitude),
+					visitedLocation.location);
+			nearbyAttractions.add(new NearByAttraction(attraction, distance, user));
 		}
+
+		result.add(null);
 		
-		return nearbyAttractions;
+		return result;
 	}
 	
 	private void addShutDownHook() {
