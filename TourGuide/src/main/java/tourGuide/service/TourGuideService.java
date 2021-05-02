@@ -126,7 +126,7 @@ public class TourGuideService {
 	}
 
 	public VisitedLocation trackUserLocation(User user) {
-		//Task1
+		//Task1 - random generator for longitude and latitude with TreadLocalRandom https://www.codeflow.site/fr/article/java-thread-local-random
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 		//Task2 - need visitedLocation to be created
 		user.addToVisitedLocations(visitedLocation);
@@ -143,10 +143,12 @@ public class TourGuideService {
 	/**
 	 * <b>return 5 Attractions</b>
 	 * <p>Ajouter les 5 attractions les plus proches par rapport au dernier emplacement de l'utilisateur peu importe leur distance.</p>
-	 * @param visitedLocation mandatory param
+	 * @param user mandatory param
 	 * @return a list of Attraction
 	 */
-	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
+	public List<Attraction> getNearByAttractions(User user) {
+		VisitedLocation visitedLocation = this.getUserLocation(user);
+
 		List<Attraction> nearbyAttractions = new ArrayList<>();
 		for(Attraction attraction : gpsUtil.getAttractions()) {
 			if(rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
