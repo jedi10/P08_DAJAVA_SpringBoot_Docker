@@ -12,6 +12,7 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
+import tourGuide.domain.NearByAttraction;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
@@ -103,7 +104,7 @@ public class TestTourGuideService {
 		User user = new User(UUID.randomUUID(), "internalUser1", "000", "jon@tourGuide.com");
 
 		//WHEN
-		List<Attraction> attractions = tourGuideService.getNearByAttractions(user);
+		List<NearByAttraction> attractions = tourGuideService.getNearByAttractions(user);
 		tourGuideService.tracker.stopTracking();
 		//THEN
 		assertEquals(5, attractions.size());

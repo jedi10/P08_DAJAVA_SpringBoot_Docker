@@ -145,12 +145,12 @@ public class TourGuideService {
 	 * <b>return 5 Attractions</b>
 	 * <p>Ajouter les 5 attractions les plus proches par rapport au dernier emplacement de l'utilisateur peu importe leur distance.</p>
 	 * @param user mandatory param
-	 * @return a list of Attraction
+	 * @return a list of NearByAttraction
 	 */
-	public List<Attraction> getNearByAttractions(User user) {
+	public List<NearByAttraction> getNearByAttractions(User user) {
 		VisitedLocation visitedLocation = this.getUserLocation(user);
 
-		List<Attraction> result = new ArrayList<>();
+		List<NearByAttraction> result = new ArrayList<>();
 
 		List<NearByAttraction> nearbyAttractions = new ArrayList<>();
 
@@ -160,8 +160,11 @@ public class TourGuideService {
 					visitedLocation.location);
 			nearbyAttractions.add(new NearByAttraction(attraction, distance));
 		}
-
-		result.add(null);
+		result = nearbyAttractions.stream()
+				.sorted(Comparator.comparingDouble(NearByAttraction::getDistance))//.reversed())
+				.limit(5)
+				.collect(Collectors.toList());
+		result.forEach(e-> e.calculateAttractionRewards(user));
 		
 		return result;
 	}

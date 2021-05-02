@@ -3,6 +3,8 @@ package tourGuide.domain;
 import gpsUtil.location.Attraction;
 import rewardCentral.RewardCentral;
 
+import java.util.UUID;
+
 /**
  * <b>Used with NearByUserAttraction</b>
  */
@@ -12,6 +14,7 @@ public class NearByAttraction {
     private Double attractionLong;
     private Double distance;
     private int rewardsPoints;
+    private UUID attractionId;
 
     /**
      * <b>Constructor NearByAttraction</b>
@@ -22,13 +25,14 @@ public class NearByAttraction {
         this.attractionName = attraction.attractionName;
         this.attractionLat = attraction.latitude;
         this.attractionLong = attraction.longitude;
+        this.attractionId = attraction.attractionId;
         this.distance = distance;
         this.rewardsPoints = 0;
     }
 
-    private void calculateAttractionRewards(Attraction attraction, User user ){
+    public void calculateAttractionRewards(User user ){
         RewardCentral rewardCentral = new RewardCentral();
-        this.rewardsPoints = rewardCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
+        this.rewardsPoints = rewardCentral.getAttractionRewardPoints(this.attractionId, user.getUserId());
     }
 
     public String getAttractionName() {
