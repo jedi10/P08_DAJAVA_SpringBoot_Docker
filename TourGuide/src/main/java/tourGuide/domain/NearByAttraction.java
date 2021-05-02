@@ -11,25 +11,24 @@ public class NearByAttraction {
     private Double attractionLat;
     private Double attractionLong;
     private Double distance;
-    private Double rewardsPoints;
+    private int rewardsPoints;
 
     /**
      * <b>Constructor NearByAttraction</b>
      * @param attraction mandatory - Attraction Type
      * @param distance mandatory - Double Type
-     * @param user mandatory - User Type     *
      */
-    public NearByAttraction(Attraction attraction, Double distance, User user) {
+    public NearByAttraction(Attraction attraction, Double distance) {
         this.attractionName = attraction.attractionName;
         this.attractionLat = attraction.latitude;
         this.attractionLong = attraction.longitude;
         this.distance = distance;
-        this.rewardsPoints = calculateAttractionRewards(attraction, user);
+        this.rewardsPoints = 0;
     }
 
-    private double calculateAttractionRewards(Attraction attraction, User user ){
+    private void calculateAttractionRewards(Attraction attraction, User user ){
         RewardCentral rewardCentral = new RewardCentral();
-        return rewardCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
+        this.rewardsPoints = rewardCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
     }
 
     public String getAttractionName() {
@@ -64,11 +63,11 @@ public class NearByAttraction {
         this.distance = distance;
     }
 
-    public Double getRewardsPoints() {
+    public int getRewardsPoints() {
         return rewardsPoints;
     }
 
-    public void setRewardsPoints(Double rewardsPoints) {
+    public void setRewardsPoints(int rewardsPoints) {
         this.rewardsPoints = rewardsPoints;
     }
 }

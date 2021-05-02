@@ -158,7 +158,7 @@ public class TourGuideService {
 			Double distance = rewardsService.getDistance(
 					new Location(attraction.longitude, attraction.latitude),
 					visitedLocation.location);
-			nearbyAttractions.add(new NearByAttraction(attraction, distance, user));
+			nearbyAttractions.add(new NearByAttraction(attraction, distance));
 		}
 
 		result.add(null);
