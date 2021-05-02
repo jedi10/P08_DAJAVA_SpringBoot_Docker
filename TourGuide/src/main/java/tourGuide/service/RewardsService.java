@@ -1,7 +1,5 @@
 package tourGuide.service;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
@@ -9,8 +7,8 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
-import tourGuide.user.User;
-import tourGuide.user.UserReward;
+import tourGuide.domain.User;
+import tourGuide.domain.UserReward;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 

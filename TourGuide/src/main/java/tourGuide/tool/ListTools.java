@@ -1,6 +1,6 @@
 package tourGuide.tool;
 
-import tourGuide.user.User;
+import tourGuide.domain.User;
 
 import java.util.ArrayList;
 import java.util.List;
