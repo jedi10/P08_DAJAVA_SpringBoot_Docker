@@ -1,8 +1,5 @@
 package tourGuide;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -17,7 +14,11 @@ import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.domain.User;
+import tourGuide.web.dto.NearByAttractionDTO;
+import tourGuide.web.dto.NearByUserAttractionDTO;
 import tripPricer.Provider;
+
+import static org.junit.Assert.*;
 
 public class TestTourGuideService {
 
@@ -104,10 +105,13 @@ public class TestTourGuideService {
 		User user = new User(UUID.randomUUID(), "internalUser1", "000", "jon@tourGuide.com");
 
 		//WHEN
-		List<NearByAttraction> attractions = tourGuideService.getNearByAttractions(user);
+		NearByUserAttractionDTO nearByUserAttractionDTO = tourGuideService.getNearByAttractions(user);
 		tourGuideService.tracker.stopTracking();
 		//THEN
-		assertEquals(5, attractions.size());
+		assertNotNull(nearByUserAttractionDTO);
+		List<NearByAttractionDTO> nearByAttractionDTOList = nearByUserAttractionDTO.getTourist_attractions();
+		assertNotNull(nearByAttractionDTOList);
+		assertEquals(5, nearByAttractionDTOList.size());
 	}
 	
 	public void getTripDeals() {

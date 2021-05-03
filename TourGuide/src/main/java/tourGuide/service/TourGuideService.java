@@ -21,6 +21,7 @@ import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
 import tourGuide.domain.User;
 import tourGuide.domain.UserReward;
+import tourGuide.web.dto.NearByUserAttractionDTO;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 
@@ -142,29 +143,31 @@ public class TourGuideService {
 	}
 
 	/**
-	 * <b>return 5 Attractions</b>
-	 * <p>Ajouter les 5 attractions les plus proches par rapport au dernier emplacement de l'utilisateur peu importe leur distance.</p>
-	 * @param user mandatory param
-	 * @return a list of NearByAttraction
+	 * <b>return the 5 closest attractions based from user's actual location</b>
+	 * <p>5 user nearest attractions from the last user localisation without any distance limit</p>
+	 * <p>Used by /nearbyAttractions (POST) endpoint
+	 * @param user mandatory
+	 * @return NearByUserAttractionDTO
 	 */
-	public List<NearByAttraction> getNearByAttractions(User user) {
+	public NearByUserAttractionDTO getNearByAttractions(User user) {
 		VisitedLocation visitedLocation = this.getUserLocation(user);
+		NearByUserAttractionDTO result;
+		List<NearByAttraction> nearByAttractions = new ArrayList<>();
 
-		List<NearByAttraction> result = new ArrayList<>();
-
-		List<NearByAttraction> nearbyAttractions = new ArrayList<>();
+		List<NearByAttraction> nearByAttractionsSorted;
 
 		for(Attraction attraction : gpsUtil.getAttractions()) {
 			Double distance = rewardsService.getDistance(
 					new Location(attraction.longitude, attraction.latitude),
 					visitedLocation.location);
-			nearbyAttractions.add(new NearByAttraction(attraction, distance));
+			nearByAttractions.add(new NearByAttraction(attraction, distance));
 		}
-		result = nearbyAttractions.stream()
+		nearByAttractionsSorted = nearByAttractions.stream()
 				.sorted(Comparator.comparingDouble(NearByAttraction::getDistance))//.reversed())
 				.limit(5)
 				.collect(Collectors.toList());
-		result.forEach(e-> e.calculateAttractionRewards(user));
+
+		result = new NearByUserAttractionDTO(user, visitedLocation, nearByAttractionsSorted);
 		
 		return result;
 	}

@@ -1,19 +1,18 @@
 package tourGuide.domain;
 
 import gpsUtil.location.Attraction;
-import rewardCentral.RewardCentral;
 
 import java.util.UUID;
 
 /**
- * <b>Used with NearByUserAttraction</b>
+ * <b>Used with TourGuideService.getNearByAttractions Service</b>
+ * @see tourGuide.service.TourGuideService#getNearByAttractions(User)
  */
 public class NearByAttraction {
     private String attractionName;
     private Double attractionLat;
     private Double attractionLong;
     private Double distance;
-    private int rewardsPoints;
     private UUID attractionId;
 
     /**
@@ -27,12 +26,6 @@ public class NearByAttraction {
         this.attractionLong = attraction.longitude;
         this.attractionId = attraction.attractionId;
         this.distance = distance;
-        this.rewardsPoints = 0;
-    }
-
-    public void calculateAttractionRewards(User user ){
-        RewardCentral rewardCentral = new RewardCentral();
-        this.rewardsPoints = rewardCentral.getAttractionRewardPoints(this.attractionId, user.getUserId());
     }
 
     public String getAttractionName() {
@@ -67,11 +60,14 @@ public class NearByAttraction {
         this.distance = distance;
     }
 
-    public int getRewardsPoints() {
-        return rewardsPoints;
+    public UUID getAttractionId() {
+        return attractionId;
     }
 
-    public void setRewardsPoints(int rewardsPoints) {
-        this.rewardsPoints = rewardsPoints;
+    public void setAttractionId(UUID attractionId) {
+        this.attractionId = attractionId;
     }
 }
+
+
+//https://www.javaguides.net/2019/04/jackson-ignore-fields-or-properties-on-serialization.html
