@@ -146,6 +146,7 @@ public class TourGuideService {
 	 * <b>return the 5 closest attractions based from user's actual location</b>
 	 * <p>5 user nearest attractions from the last user localisation without any distance limit</p>
 	 * <p>Used by /nearbyAttractions (POST) endpoint
+	 * @see tourGuide.TourGuideController#getNearbyAttractions(String)
 	 * @param user mandatory
 	 * @return NearByUserAttractionDTO
 	 */
