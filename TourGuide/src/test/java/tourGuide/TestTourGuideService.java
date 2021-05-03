@@ -1,23 +1,24 @@
 package tourGuide;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
+import tourGuide.domain.NearByAttraction;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
-import tourGuide.user.User;
+import tourGuide.domain.User;
+import tourGuide.web.dto.NearByAttractionDTO;
+import tourGuide.web.dto.NearByUserAttractionDTO;
 import tripPricer.Provider;
+
+import static org.junit.Assert.*;
 
 public class TestTourGuideService {
 
@@ -92,23 +93,25 @@ public class TestTourGuideService {
 		assertEquals(user.getUserId(), visitedLocation.userId);
 	}
 	
-	@Ignore // Not yet implemented
+	//@Ignore // Not yet implemented
 	@Test
 	public void getNearbyAttractions() {
 		//GIVEN
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
-		InternalTestHelper.setInternalUserNumber(0);
+		InternalTestHelper.setInternalUserNumber(10);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 		
-		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
+		User user = new User(UUID.randomUUID(), "internalUser1", "000", "jon@tourGuide.com");
 
 		//WHEN
-		List<Attraction> attractions = tourGuideService.getNearByAttractions(visitedLocation);
+		NearByUserAttractionDTO nearByUserAttractionDTO = tourGuideService.getNearByAttractions(user);
 		tourGuideService.tracker.stopTracking();
 		//THEN
-		assertEquals(5, attractions.size());
+		assertNotNull(nearByUserAttractionDTO);
+		List<NearByAttractionDTO> nearByAttractionDTOList = nearByUserAttractionDTO.getTourist_attractions();
+		assertNotNull(nearByAttractionDTOList);
+		assertEquals(5, nearByAttractionDTOList.size());
 	}
 	
 	public void getTripDeals() {

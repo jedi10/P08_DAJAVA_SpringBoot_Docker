@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.time.StopWatch;
 //import org.junit.Ignore;
@@ -25,9 +24,7 @@ import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
-import tourGuide.tool.ListTools;
-import tourGuide.user.User;
-import tourGuide.user.UserReward;
+import tourGuide.domain.User;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

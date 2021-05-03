@@ -16,10 +16,12 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import tourGuide.domain.NearByAttraction;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
-import tourGuide.user.User;
-import tourGuide.user.UserReward;
+import tourGuide.domain.User;
+import tourGuide.domain.UserReward;
+import tourGuide.web.dto.NearByUserAttractionDTO;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 
@@ -126,7 +128,7 @@ public class TourGuideService {
 	}
 
 	public VisitedLocation trackUserLocation(User user) {
-		//Task1
+		//Task1 - random generator for longitude and latitude with TreadLocalRandom https://www.codeflow.site/fr/article/java-thread-local-random
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 		//Task2 - need visitedLocation to be created
 		user.addToVisitedLocations(visitedLocation);
@@ -141,20 +143,34 @@ public class TourGuideService {
 	}
 
 	/**
-	 * <b>return 5 Attractions</b>
-	 * <p>Ajouter les 5 attractions les plus proches par rapport au dernier emplacement de l'utilisateur peu importe leur distance.</p>
-	 * @param visitedLocation mandatory param
-	 * @return a list of Attraction
+	 * <b>return the 5 closest attractions based from user's actual location</b>
+	 * <p>5 user nearest attractions from the last user localisation without any distance limit</p>
+	 * <p>Used by /nearbyAttractions (POST) endpoint
+	 * @see tourGuide.TourGuideController#getNearbyAttractions(String)
+	 * @param user mandatory
+	 * @return NearByUserAttractionDTO
 	 */
-	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
-		List<Attraction> nearbyAttractions = new ArrayList<>();
+	public NearByUserAttractionDTO getNearByAttractions(User user) {
+		VisitedLocation visitedLocation = this.getUserLocation(user);
+		NearByUserAttractionDTO result;
+		List<NearByAttraction> nearByAttractions = new ArrayList<>();
+
+		List<NearByAttraction> nearByAttractionsSorted;
+
 		for(Attraction attraction : gpsUtil.getAttractions()) {
-			if(rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
-				nearbyAttractions.add(attraction);
-			}
+			Double distance = rewardsService.getDistance(
+					new Location(attraction.longitude, attraction.latitude),
+					visitedLocation.location);
+			nearByAttractions.add(new NearByAttraction(attraction, distance));
 		}
+		nearByAttractionsSorted = nearByAttractions.stream()
+				.sorted(Comparator.comparingDouble(NearByAttraction::getDistance))//.reversed())
+				.limit(5)
+				.collect(Collectors.toList());
+
+		result = new NearByUserAttractionDTO(user, visitedLocation, nearByAttractionsSorted);
 		
-		return nearbyAttractions;
+		return result;
 	}
 	
 	private void addShutDownHook() {
