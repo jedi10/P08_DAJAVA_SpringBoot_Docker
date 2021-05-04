@@ -39,7 +39,7 @@ class TourGuideServiceTest {
         assertNotNull(visitedLocation2);
 
         //When
-        Map<String, Location> currentLocationsMap = tourGuideService.getAllcurrentLocations();
+        Map<String, Location> currentLocationsMap = tourGuideService.getAllCurrentLocations();
 
         //Then
         assertNotNull(currentLocationsMap);

@@ -16,6 +16,7 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import tourGuide.TourGuideController;
 import tourGuide.domain.NearByAttraction;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
@@ -145,7 +146,7 @@ public class TourGuideService {
 	/**
 	 * <b>return the 5 closest attractions based from user's actual location</b>
 	 * <p>5 user nearest attractions from the last user localisation without any distance limit</p>
-	 * <p>Used by /nearbyAttractions (POST) endpoint
+	 * <p>Used by /getNearbyAttractions (POST) endpoint
 	 * @see tourGuide.TourGuideController#getNearbyAttractions(String)
 	 * @param user mandatory
 	 * @return NearByUserAttractionDTO
@@ -173,8 +174,17 @@ public class TourGuideService {
 		return result;
 	}
 
-	public Map<String, Location> getAllcurrentLocations(){
-		return null;
+	/**
+	 * <b>Get all users actual locations</b>
+	 * <p>Used by /getAllCurrentLocations (GET) endpoint</p>
+	 * @see TourGuideController#getAllCurrentLocations()
+	 * @return Map of Users Location (Value) with user UUID (Key)
+	 */
+	public Map<String, Location> getAllCurrentLocations(){
+		Map<String, Location> allCurrentLocationsMap = new HashMap<>();
+		this.getAllUsers().forEach(user ->
+				allCurrentLocationsMap.put(user.getUserId().toString(), user.getLastVisitedLocation().location));
+		return allCurrentLocationsMap;
 	}
 	
 	private void addShutDownHook() {
