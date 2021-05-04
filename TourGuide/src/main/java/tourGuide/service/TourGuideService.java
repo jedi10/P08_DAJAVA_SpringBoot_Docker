@@ -172,6 +172,10 @@ public class TourGuideService {
 		
 		return result;
 	}
+
+	public Map<String, Location> getAllcurrentLocations(){
+		return null;
+	}
 	
 	private void addShutDownHook() {
 		Runtime.getRuntime().addShutdownHook(new Thread() { 
