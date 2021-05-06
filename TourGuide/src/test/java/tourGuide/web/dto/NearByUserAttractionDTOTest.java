@@ -3,10 +3,7 @@ package tourGuide.web.dto;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -32,9 +29,9 @@ import static pl.pojo.tester.api.assertion.Method.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class NearByUserAttractionDTOTest {
 
-
     private NearByUserAttractionDTO nearByUserAttractionDTO;
 
+    @Order(1)
     @Test
     public void nearByUserAttractionDTOPojo(){
         //GIVEN
@@ -47,6 +44,7 @@ class NearByUserAttractionDTOTest {
                 .areWellImplemented();
     }
 
+    @Order(2)
     @Test
     public void convertNearByLocationToDTO(){
         //GIVEN
