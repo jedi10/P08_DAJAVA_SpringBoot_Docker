@@ -19,7 +19,7 @@ import static pl.pojo.tester.api.assertion.Method.*;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class NearByAttractionDTOTest {
 
     @Mock
