@@ -20,9 +20,10 @@ class TourGuideServiceTest {
     void getAllCurrentLocations() {
         //Given
         GpsUtil gpsUtil = new GpsUtil();
+        RewardCentral rewardCentral = new RewardCentral();
         RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
         InternalTestHelper.setInternalUserNumber(0);
-        TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+        TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, rewardCentral);
         User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
         User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
 

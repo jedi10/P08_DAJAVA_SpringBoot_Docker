@@ -1,6 +1,7 @@
 package tourGuide.web.dto;
 
 import gpsUtil.location.VisitedLocation;
+import rewardCentral.RewardCentral;
 import tourGuide.domain.NearByAttraction;
 import tourGuide.domain.User;
 
@@ -23,16 +24,17 @@ public class NearByUserAttractionDTO {
      * @param userLocation mandatory
      * @param tourist_attractions mandatory
      */
-    public NearByUserAttractionDTO(User user, VisitedLocation userLocation, List<NearByAttraction> tourist_attractions) {
+    public NearByUserAttractionDTO(User user, VisitedLocation userLocation, List<NearByAttraction> tourist_attractions, RewardCentral rewardCentral) {
         this.userLat = userLocation.location.latitude;
         this.userLong = userLocation.location.longitude;
-        convertNearByLocationToDTO(user, tourist_attractions);
+        convertNearByLocationToDTO(user, tourist_attractions, rewardCentral);
     }
 
 
-    private void convertNearByLocationToDTO(User user, List<NearByAttraction> nearByAttractions){
+    public void convertNearByLocationToDTO(User user, List<NearByAttraction> nearByAttractions, RewardCentral rewardCentral){
         List<NearByAttractionDTO> result = new ArrayList<>();
-        nearByAttractions.forEach(e-> result.add(new NearByAttractionDTO(e, user)));
+        nearByAttractions.forEach(nearByAttraction->
+                result.add(new NearByAttractionDTO(nearByAttraction, user, rewardCentral)));
         tourist_attractions = result;
     }
 
