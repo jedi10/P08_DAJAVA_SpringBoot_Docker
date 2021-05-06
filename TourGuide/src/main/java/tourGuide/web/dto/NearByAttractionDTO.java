@@ -21,16 +21,15 @@ public class NearByAttractionDTO {
          * @param nearByAttraction mandatory - Attraction Type
          * @param user mandatory - User Type
          */
-        public NearByAttractionDTO(NearByAttraction nearByAttraction, User user) {
+        public NearByAttractionDTO(NearByAttraction nearByAttraction, User user, RewardCentral rewardCentral) {
             this.attractionName = nearByAttraction.getAttractionName();
             this.attractionLat = nearByAttraction.getAttractionLat();
             this.attractionLong = nearByAttraction.getAttractionLong();
             this.distance = nearByAttraction.getDistance();
-            calculateAttractionRewards(nearByAttraction, user);
+            calculateAttractionRewards(nearByAttraction, user, rewardCentral);
         }
 
-        public void calculateAttractionRewards(NearByAttraction nearByAttraction, User user){
-            RewardCentral rewardCentral = new RewardCentral();
+        public void calculateAttractionRewards(NearByAttraction nearByAttraction, User user, RewardCentral rewardCentral){
             this.rewardsPoints = rewardCentral.getAttractionRewardPoints(nearByAttraction.getAttractionId(), user.getUserId());
         }
 

@@ -10,12 +10,14 @@ import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import rewardCentral.RewardCentral;
 import tourGuide.TourGuideController;
 import tourGuide.domain.NearByAttraction;
 import tourGuide.helper.InternalTestHelper;
@@ -32,6 +34,7 @@ public class TourGuideService {
 	private final GpsUtil gpsUtil;
 	private final RewardsService rewardsService;
 	private final TripPricer tripPricer = new TripPricer();
+	private final RewardCentral rewardCentral;
 	public final Tracker tracker;
 	boolean testMode = true;
 	private ExecutorService executorService;
@@ -56,8 +59,9 @@ public class TourGuideService {
 		}
 	}
 	
-	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
+	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService, RewardCentral rewardCentral) {
 		this.gpsUtil = gpsUtil;
+		this.rewardCentral = rewardCentral;
 		this.rewardsService = rewardsService;
 		this.executorService = Executors.newFixedThreadPool(1500);//.newCachedThreadPool()
 		Locale.setDefault(new Locale("en", "US"));
@@ -169,7 +173,7 @@ public class TourGuideService {
 				.limit(5)
 				.collect(Collectors.toList());
 
-		result = new NearByUserAttractionDTO(user, visitedLocation, nearByAttractionsSorted);
+		result = new NearByUserAttractionDTO(user, visitedLocation, nearByAttractionsSorted, rewardCentral);
 		
 		return result;
 	}
