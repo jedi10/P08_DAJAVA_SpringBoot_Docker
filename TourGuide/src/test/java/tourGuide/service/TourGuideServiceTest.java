@@ -3,21 +3,24 @@ package tourGuide.service;
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import rewardCentral.RewardCentral;
 import tourGuide.domain.User;
+import tourGuide.domain.UserPreferences;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.web.dto.NearByAttractionDTO;
 import tourGuide.web.dto.NearByUserAttractionDTO;
 import tripPricer.Provider;
 
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -148,16 +151,44 @@ class TourGuideServiceTest {
         assertEquals(5, nearByAttractionDTOList.size());
     }
 
-    @Disabled
     @Order(7)
     @Test
     public void getTripDeals() {
+        //Given
         User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 
+        //When
         List<Provider> providers = tourGuideService.getTripDeals(user);
-
         tourGuideService.tracker.stopTracking();
+        //Then
+        assertEquals(5, providers.size());
+    }
 
-        assertEquals(10, providers.size());
+    @Order(8)
+    @DisplayName("Trip Deal with Price Preference")
+    @ParameterizedTest(name = "Between {0} and {1}")
+    @CsvSource({"100, 700", "0, 600"})
+    public void getTripDealsWithPricePreference(int lowPricePreference, int highPricePreference) {
+        //Given
+        CurrencyUnit currency = Monetary.getCurrency("USD");
+        Money moneyLow = Money.of(lowPricePreference, Monetary.getCurrency("USD"));
+        Money moneyHigh = Money.of(highPricePreference, Monetary.getCurrency("USD"));
+        UserPreferences userPreferences = new UserPreferences(1000, currency,
+                moneyLow, moneyHigh,
+                5, 5, 2,3);
+        User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
+        user.setUserPreferences(userPreferences);
+        double userHighPrice = user.getUserPreferences().getHighPricePoint().getNumber().doubleValue();
+        assertNotNull(userHighPrice);
+        assertNotEquals(0.00, userHighPrice);
+
+        //When
+        List<Provider> providers = tourGuideService.getTripDeals(user);
+        tourGuideService.tracker.stopTracking();
+        //Then
+        providers.forEach(p -> {
+            assertTrue(p.price <= userHighPrice,
+                    "Provider price not respect user higher price '"+ userHighPrice +"'");
+        });
     }
 }
