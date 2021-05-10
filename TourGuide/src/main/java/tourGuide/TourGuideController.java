@@ -2,6 +2,8 @@ package tourGuide;
 
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +18,7 @@ import tripPricer.Provider;
 
 @RestController
 public class TourGuideController {
+    private Logger logger = LoggerFactory.getLogger(TourGuideController.class);
 
 	@Autowired
 	TourGuideService tourGuideService;
@@ -45,10 +48,16 @@ public class TourGuideController {
     public String getAllCurrentLocations() {
     	return JsonStream.serialize(tourGuideService.getAllCurrentLocations());
     }
-    
+
+    /**
+     * <b>Return a list of Trip providers</b>
+     * @param userName mandatory
+     * @return json with providers information
+     */
     @RequestMapping("/getTripDeals")
     public String getTripDeals(@RequestParam String userName) {
     	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
+        logger.info("Call getTripDeals endpoint (get user's personalized trip deals)");
     	return JsonStream.serialize(providers);
     }
     
