@@ -136,10 +136,11 @@ public class TourGuideService {
 	 * @see tourGuide.TourGuideController#setUserPreferences(String, UserPreferencesDTO)
 	 * @param username    string mandatory
 	 * @param userPreferencesDTO request body for UserPreferences Object
-	 * @return user with updated preferences
+	 * @return Map with username key and userPreferenceDTO as value used for setting
 	 */
-	public User setUserPreferences(String username, UserPreferencesDTO userPreferencesDTO) {
+	public Map<String, UserPreferencesDTO> setUserPreferences(String username, UserPreferencesDTO userPreferencesDTO) {
 		User user = getUser(username);
+		UserPreferencesDTO.convertFromDTO(userPreferencesDTO);
 		UserPreferences userPreferences = new UserPreferences(
 				userPreferencesDTO.getAttractionProximity(),
 				Monetary.getCurrency(userPreferencesDTO.getCurrency()),
@@ -153,7 +154,7 @@ public class TourGuideService {
 		user.setUserPreferences(userPreferences);
 		int userIndex = this.getAllUsers().indexOf(user);
 		this.getAllUsers().get(userIndex).setUserPreferences(userPreferences);
-		return user;
+		return Map.of(username, userPreferencesDTO);
 	}
 
 	/**

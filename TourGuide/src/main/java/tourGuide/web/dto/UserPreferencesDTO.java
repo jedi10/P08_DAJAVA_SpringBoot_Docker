@@ -1,8 +1,8 @@
 package tourGuide.web.dto;
 
 import org.javamoney.moneta.Money;
+import tourGuide.domain.UserPreferences;
 
-import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 
 public class UserPreferencesDTO {
@@ -24,6 +24,30 @@ public class UserPreferencesDTO {
         this.ticketQuantity = ticketQuantity;
         this.numberOfAdults = numberOfAdults;
         this.numberOfChildren = numberOfChildren;
+    }
+
+    public static UserPreferences convertFromDTO(UserPreferencesDTO userPreferencesDTO){
+        return new UserPreferences(
+                userPreferencesDTO.getAttractionProximity(),
+                Monetary.getCurrency(userPreferencesDTO.getCurrency()),
+                Money.of(userPreferencesDTO.getLowerPricePoint(), Monetary.getCurrency(userPreferencesDTO.getCurrency())),
+                Money.of(userPreferencesDTO.getHighPricePoint(), Monetary.getCurrency(userPreferencesDTO.getCurrency())),
+                userPreferencesDTO.getTripDuration(),
+                userPreferencesDTO.getTicketQuantity(),
+                userPreferencesDTO.getNumberOfAdults(),
+                userPreferencesDTO.getNumberOfChildren());
+    }
+
+    public static UserPreferencesDTO convertToDTO(UserPreferences userPreferences){
+        return new UserPreferencesDTO(
+                userPreferences.getAttractionProximity(),
+                userPreferences.getCurrency().toString(),
+                userPreferences.getLowerPricePoint().getNumber().intValue(),
+                userPreferences.getHighPricePoint().getNumber().intValue(),
+                userPreferences.getTripDuration(),
+                userPreferences.getTicketQuantity(),
+                userPreferences.getNumberOfAdults(),
+                userPreferences.getNumberOfChildren());
     }
 
     public int getAttractionProximity() {

@@ -1,6 +1,7 @@
 package tourGuide;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -73,7 +74,7 @@ public class TourGuideController {
     @RequestMapping("/setUserPreferences")
     public String setUserPreferences(@RequestParam String userName,
                                      @RequestBody UserPreferencesDTO userPreferences) {
-        User userUpdated = tourGuideService.setUserPreferences(userName, userPreferences);
+        Map<String, UserPreferencesDTO> userUpdated = tourGuideService.setUserPreferences(userName, userPreferences);
         logger.info("Call setUserPreferences endpoint");
         return JsonStream.serialize(userUpdated);
     }
@@ -84,9 +85,9 @@ public class TourGuideController {
      * @return user preferences
      */
     @RequestMapping("/getUserPreferences")
-    public UserPreferences getUserPreferences(@RequestParam String userName) {
+    public UserPreferencesDTO getUserPreferences(@RequestParam String userName) {
         User user = tourGuideService.getUser(userName);
-        UserPreferences userPreferences = user.getUserPreferences();
+        UserPreferencesDTO userPreferences = UserPreferencesDTO.convertToDTO(user.getUserPreferences());
         logger.info("Call getUserPreferences endpoint");
         return userPreferences;
     }
