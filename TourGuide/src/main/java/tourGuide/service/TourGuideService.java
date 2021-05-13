@@ -128,6 +128,8 @@ public class TourGuideService {
 
 	/**
 	 * <b>Set user's preferences useful for personalized trip deals</b>
+	 * <p>used by /setUserPreferences (POST) endpoint</p>
+	 * @see tourGuide.TourGuideController#setUserPreferences(String, UserPreferences)
 	 * @param username    string mandatory
 	 * @param preferences request body for UserPreferences Object
 	 * @return user with updated preferences

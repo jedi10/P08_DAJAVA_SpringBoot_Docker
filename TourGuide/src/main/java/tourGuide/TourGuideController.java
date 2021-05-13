@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jsoniter.output.JsonStream;
 
 import gpsUtil.location.VisitedLocation;
+import tourGuide.domain.UserPreferences;
 import tourGuide.service.TourGuideService;
 import tourGuide.domain.User;
 import tripPricer.Provider;
@@ -59,6 +61,33 @@ public class TourGuideController {
     	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
         logger.info("Call getTripDeals endpoint (get user's personalized trip deals)");
     	return JsonStream.serialize(providers);
+    }
+
+    /**
+     * <b>set user Preferences and return user updated</b>
+     * @param userName mandatory string
+     * @param userPreferences user preferences
+     * @return user updated
+     */
+    @RequestMapping("/setUserPreferences")
+    public String setUserPreferences(@RequestParam String userName,
+                                     @RequestBody UserPreferences userPreferences) {
+        User userUpdated = tourGuideService.setUserPreferences(userName, userPreferences);
+        logger.info("Call setUserPreferences endpoint");
+        return JsonStream.serialize(userUpdated);
+    }
+
+    /**
+     * <b>get user Preferences</b>
+     * @param userName mandatory string
+     * @return user preferences
+     */
+    @RequestMapping("/getUserPreferences")
+    public UserPreferences getUserPreferences(@RequestParam String userName) {
+        User user = tourGuideService.getUser(userName);
+        UserPreferences userPreferences = user.getUserPreferences();
+        logger.info("Call getUserPreferences endpoint");
+        return userPreferences;
     }
     
     private User getUser(String userName) {
