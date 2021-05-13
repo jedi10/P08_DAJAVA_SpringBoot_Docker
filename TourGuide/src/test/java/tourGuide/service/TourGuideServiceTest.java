@@ -13,6 +13,7 @@ import tourGuide.domain.UserPreferences;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.web.dto.NearByAttractionDTO;
 import tourGuide.web.dto.NearByUserAttractionDTO;
+import tourGuide.web.dto.UserPreferencesDTO;
 import tripPricer.Provider;
 
 import javax.money.CurrencyUnit;
@@ -201,15 +202,11 @@ class TourGuideServiceTest {
     @CsvSource({"0, 2500", "2500, 5000"})
     void setUserPreferences(int lowPricePreference, int highPricePreference) {
         //Given
-        CurrencyUnit currency = Monetary.getCurrency("USD");
-        Money moneyLow = Money.of(lowPricePreference, Monetary.getCurrency("USD"));
-        Money moneyHigh = Money.of(highPricePreference, Monetary.getCurrency("USD"));
-        UserPreferences userPreferencesGiven = new UserPreferences(1000, currency,
-                moneyLow, moneyHigh,
+        UserPreferencesDTO userPreferencesGiven = new UserPreferencesDTO(1000, "USD",
+                lowPricePreference, highPricePreference,
                 5, 5, 2,3);
         User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
         tourGuideService.addUser(user);//without updated preferences
-        user.setUserPreferences(userPreferencesGiven);
 
         //When
         User userUpdated = tourGuideService.setUserPreferences(user.getUserName(), userPreferencesGiven);
@@ -217,9 +214,7 @@ class TourGuideServiceTest {
 
         //THEN
         assertNotNull(userUpdated);
-        assertEquals(userPreferencesGiven,
-                (userUpdated.getUserPreferences()));
-        assertEquals(userPreferencesGiven,
-                (userUpdated.getUserPreferences()));
+        assertEquals(userPreferencesGiven.getHighPricePoint(),
+                (userUpdated.getUserPreferences().getHighPricePoint().getNumber().doubleValue()));
     }
 }

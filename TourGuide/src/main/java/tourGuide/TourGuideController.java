@@ -16,6 +16,7 @@ import gpsUtil.location.VisitedLocation;
 import tourGuide.domain.UserPreferences;
 import tourGuide.service.TourGuideService;
 import tourGuide.domain.User;
+import tourGuide.web.dto.UserPreferencesDTO;
 import tripPricer.Provider;
 
 @RestController
@@ -71,7 +72,7 @@ public class TourGuideController {
      */
     @RequestMapping("/setUserPreferences")
     public String setUserPreferences(@RequestParam String userName,
-                                     @RequestBody UserPreferences userPreferences) {
+                                     @RequestBody UserPreferencesDTO userPreferences) {
         User userUpdated = tourGuideService.setUserPreferences(userName, userPreferences);
         logger.info("Call setUserPreferences endpoint");
         return JsonStream.serialize(userUpdated);

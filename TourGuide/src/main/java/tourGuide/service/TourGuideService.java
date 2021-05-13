@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.javamoney.moneta.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,11 @@ import tourGuide.tracker.Tracker;
 import tourGuide.domain.User;
 import tourGuide.domain.UserReward;
 import tourGuide.web.dto.NearByUserAttractionDTO;
+import tourGuide.web.dto.UserPreferencesDTO;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
+
+import javax.money.Monetary;
 
 @Service
 public class TourGuideService {
@@ -129,22 +133,22 @@ public class TourGuideService {
 	/**
 	 * <b>Set user's preferences useful for personalized trip deals</b>
 	 * <p>used by /setUserPreferences (POST) endpoint</p>
-	 * @see tourGuide.TourGuideController#setUserPreferences(String, UserPreferences)
+	 * @see tourGuide.TourGuideController#setUserPreferences(String, UserPreferencesDTO)
 	 * @param username    string mandatory
-	 * @param preferences request body for UserPreferences Object
+	 * @param userPreferencesDTO request body for UserPreferences Object
 	 * @return user with updated preferences
 	 */
-	public User setUserPreferences(String username, UserPreferences preferences) {
+	public User setUserPreferences(String username, UserPreferencesDTO userPreferencesDTO) {
 		User user = getUser(username);
 		UserPreferences userPreferences = new UserPreferences(
-				preferences.getAttractionProximity(),
-				preferences.getCurrency(),
-				preferences.getLowerPricePoint(),
-				preferences.getHighPricePoint(),
-				preferences.getTripDuration(),
-				preferences.getTicketQuantity(),
-				preferences.getNumberOfAdults(),
-				preferences.getNumberOfChildren());
+				userPreferencesDTO.getAttractionProximity(),
+				Monetary.getCurrency(userPreferencesDTO.getCurrency()),
+				Money.of(userPreferencesDTO.getLowerPricePoint(), Monetary.getCurrency(userPreferencesDTO.getCurrency())),
+				Money.of(userPreferencesDTO.getHighPricePoint(), Monetary.getCurrency(userPreferencesDTO.getCurrency())),
+				userPreferencesDTO.getTripDuration(),
+				userPreferencesDTO.getTicketQuantity(),
+				userPreferencesDTO.getNumberOfAdults(),
+				userPreferencesDTO.getNumberOfChildren());
 
 		user.setUserPreferences(userPreferences);
 		int userIndex = this.getAllUsers().indexOf(user);
