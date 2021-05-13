@@ -20,6 +20,7 @@ import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourGuide.TourGuideController;
 import tourGuide.domain.NearByAttraction;
+import tourGuide.domain.UserPreferences;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
 import tourGuide.domain.User;
@@ -123,6 +124,30 @@ public class TourGuideService {
 				.collect(Collectors.toList());
 
 		return resultList;
+	}
+
+	/**
+	 * <b>Set user's preferences useful for personalized trip deals</b>
+	 * @param username    string mandatory
+	 * @param preferences request body for UserPreferences Object
+	 * @return user with updated preferences
+	 */
+	public User setUserPreferences(String username, UserPreferences preferences) {
+		User user = getUser(username);
+		UserPreferences userPreferences = new UserPreferences(
+				preferences.getAttractionProximity(),
+				preferences.getCurrency(),
+				preferences.getLowerPricePoint(),
+				preferences.getHighPricePoint(),
+				preferences.getTripDuration(),
+				preferences.getTicketQuantity(),
+				preferences.getNumberOfAdults(),
+				preferences.getNumberOfChildren());
+
+		user.setUserPreferences(userPreferences);
+		int userIndex = this.getAllUsers().indexOf(user);
+		this.getAllUsers().get(userIndex).setUserPreferences(userPreferences);
+		return user;
 	}
 
 	/**

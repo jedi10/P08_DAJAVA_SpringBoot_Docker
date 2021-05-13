@@ -5,6 +5,8 @@ import javax.money.Monetary;
 
 import org.javamoney.moneta.Money;
 
+import java.util.Objects;
+
 
 public class UserPreferences {
 	
@@ -96,4 +98,23 @@ public class UserPreferences {
 		this.numberOfChildren = numberOfChildren;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof UserPreferences)) return false;
+		UserPreferences that = (UserPreferences) o;
+		return attractionProximity == that.attractionProximity &&
+				tripDuration == that.tripDuration &&
+				ticketQuantity == that.ticketQuantity &&
+				numberOfAdults == that.numberOfAdults &&
+				numberOfChildren == that.numberOfChildren &&
+				currency.equals(that.currency) &&
+				lowerPricePoint.equals(that.lowerPricePoint) &&
+				highPricePoint.equals(that.highPricePoint);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(attractionProximity, currency, lowerPricePoint, highPricePoint, tripDuration, ticketQuantity, numberOfAdults, numberOfChildren);
+	}
 }

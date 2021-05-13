@@ -194,4 +194,32 @@ class TourGuideServiceTest {
                     "Provider price not respect user low price '"+ userHighPrice +"'");
         });
     }
+
+    @Order(9)
+    @DisplayName("Set User Preferences")
+    @ParameterizedTest(name = "Between {0} and {1}")
+    @CsvSource({"0, 2500", "2500, 5000"})
+    void setUserPreferences(int lowPricePreference, int highPricePreference) {
+        //Given
+        CurrencyUnit currency = Monetary.getCurrency("USD");
+        Money moneyLow = Money.of(lowPricePreference, Monetary.getCurrency("USD"));
+        Money moneyHigh = Money.of(highPricePreference, Monetary.getCurrency("USD"));
+        UserPreferences userPreferencesGiven = new UserPreferences(1000, currency,
+                moneyLow, moneyHigh,
+                5, 5, 2,3);
+        User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
+        tourGuideService.addUser(user);//without updated preferences
+        user.setUserPreferences(userPreferencesGiven);
+
+        //When
+        User userUpdated = tourGuideService.setUserPreferences(user.getUserName(), userPreferencesGiven);
+        tourGuideService.tracker.stopTracking();
+
+        //THEN
+        assertNotNull(userUpdated);
+        assertEquals(userPreferencesGiven,
+                (userUpdated.getUserPreferences()));
+        assertEquals(userPreferencesGiven,
+                (userUpdated.getUserPreferences()));
+    }
 }
