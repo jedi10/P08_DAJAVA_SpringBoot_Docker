@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.javamoney.moneta.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +21,17 @@ import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourGuide.TourGuideController;
 import tourGuide.domain.NearByAttraction;
+import tourGuide.domain.UserPreferences;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
 import tourGuide.domain.User;
 import tourGuide.domain.UserReward;
 import tourGuide.web.dto.NearByUserAttractionDTO;
+import tourGuide.web.dto.UserPreferencesDTO;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
+
+import javax.money.Monetary;
 
 @Service
 public class TourGuideService {
@@ -100,13 +105,56 @@ public class TourGuideService {
 			internalUserMap.put(user.getUserName(), user);
 		}
 	}
-	
+
+	/**
+	 * <b>Get Trip Deals personalised with user Preferences</b>
+	 * <p>used by /getTripDeals POST EndPoint </p>
+	 * @see tourGuide.TourGuideController#getTripDeals(String)
+	 * @param user mandatory
+	 * @return ist of providers
+	 */
 	public List<Provider> getTripDeals(User user) {
-		int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
+		List<Provider> resultList = new ArrayList<>();
+		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
 		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(), 
-				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulatativeRewardPoints);
+				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulativeRewardPoints);
 		user.setTripDeals(providers);
-		return providers;
+
+		//filtering providers with user price preference
+		double priceLow = user.getUserPreferences().getLowerPricePoint().getNumber().doubleValue();
+		double priceHigh = user.getUserPreferences().getHighPricePoint().getNumber().doubleValue();
+
+		resultList = providers.stream().filter(p -> priceLow < p.price && p.price < priceHigh)
+				.collect(Collectors.toList());
+
+		return resultList;
+	}
+
+	/**
+	 * <b>Set user's preferences useful for personalized trip deals</b>
+	 * <p>used by /setUserPreferences (POST) endpoint</p>
+	 * @see tourGuide.TourGuideController#setUserPreferences(String, UserPreferencesDTO)
+	 * @param username    string mandatory
+	 * @param userPreferencesDTO request body for UserPreferences Object
+	 * @return Map with username key and userPreferenceDTO as value used for setting
+	 */
+	public Map<String, UserPreferencesDTO> setUserPreferences(String username, UserPreferencesDTO userPreferencesDTO) {
+		User user = getUser(username);
+		UserPreferencesDTO.convertFromDTO(userPreferencesDTO);
+		UserPreferences userPreferences = new UserPreferences(
+				userPreferencesDTO.getAttractionProximity(),
+				Monetary.getCurrency(userPreferencesDTO.getCurrency()),
+				Money.of(userPreferencesDTO.getLowerPricePoint(), Monetary.getCurrency(userPreferencesDTO.getCurrency())),
+				Money.of(userPreferencesDTO.getHighPricePoint(), Monetary.getCurrency(userPreferencesDTO.getCurrency())),
+				userPreferencesDTO.getTripDuration(),
+				userPreferencesDTO.getTicketQuantity(),
+				userPreferencesDTO.getNumberOfAdults(),
+				userPreferencesDTO.getNumberOfChildren());
+
+		user.setUserPreferences(userPreferences);
+		int userIndex = this.getAllUsers().indexOf(user);
+		this.getAllUsers().get(userIndex).setUserPreferences(userPreferences);
+		return Map.of(username, userPreferencesDTO);
 	}
 
 	/**
