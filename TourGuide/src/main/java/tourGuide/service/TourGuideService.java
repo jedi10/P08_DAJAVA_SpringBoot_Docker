@@ -102,11 +102,20 @@ public class TourGuideService {
 	}
 	
 	public List<Provider> getTripDeals(User user) {
-		int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
+		List<Provider> resultList = new ArrayList<>();
+		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
 		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(), 
-				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulatativeRewardPoints);
+				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulativeRewardPoints);
 		user.setTripDeals(providers);
-		return providers;
+
+		//filtering providers with user price preference
+		double priceLow = user.getUserPreferences().getLowerPricePoint().getNumber().doubleValue();
+		double priceHigh = user.getUserPreferences().getHighPricePoint().getNumber().doubleValue();
+
+		resultList = providers.stream().filter(p -> priceLow < p.price && p.price < priceHigh)
+				.collect(Collectors.toList());
+
+		return resultList;
 	}
 
 	/**

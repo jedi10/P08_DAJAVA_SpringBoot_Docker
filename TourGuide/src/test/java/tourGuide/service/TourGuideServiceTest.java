@@ -167,7 +167,7 @@ class TourGuideServiceTest {
     @Order(8)
     @DisplayName("Trip Deal with Price Preference")
     @ParameterizedTest(name = "Between {0} and {1}")
-    @CsvSource({"100, 700", "0, 600"})
+    @CsvSource({"0, 2500", "2500, 5000"})
     public void getTripDealsWithPricePreference(int lowPricePreference, int highPricePreference) {
         //Given
         CurrencyUnit currency = Monetary.getCurrency("USD");
@@ -179,6 +179,7 @@ class TourGuideServiceTest {
         User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
         user.setUserPreferences(userPreferences);
         double userHighPrice = user.getUserPreferences().getHighPricePoint().getNumber().doubleValue();
+        double userLowPrice = user.getUserPreferences().getLowerPricePoint().getNumber().doubleValue();
         assertNotNull(userHighPrice);
         assertNotEquals(0.00, userHighPrice);
 
@@ -188,7 +189,9 @@ class TourGuideServiceTest {
         //Then
         providers.forEach(p -> {
             assertTrue(p.price <= userHighPrice,
-                    "Provider price not respect user higher price '"+ userHighPrice +"'");
+                    "Provider price not respect user high price '"+ userHighPrice +"'");
+            assertTrue(p.price >= userLowPrice,
+                    "Provider price not respect user low price '"+ userHighPrice +"'");
         });
     }
 }
