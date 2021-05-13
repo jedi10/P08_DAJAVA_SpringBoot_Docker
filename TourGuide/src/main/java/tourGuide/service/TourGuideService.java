@@ -100,7 +100,14 @@ public class TourGuideService {
 			internalUserMap.put(user.getUserName(), user);
 		}
 	}
-	
+
+	/**
+	 * <b>Get Trip Deals personalised with user Preferences</b>
+	 * <p>used by /getTripDeals POST EndPoint </p>
+	 * @see tourGuide.TourGuideController#getTripDeals(String)
+	 * @param user mandatory
+	 * @return ist of providers
+	 */
 	public List<Provider> getTripDeals(User user) {
 		List<Provider> resultList = new ArrayList<>();
 		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();

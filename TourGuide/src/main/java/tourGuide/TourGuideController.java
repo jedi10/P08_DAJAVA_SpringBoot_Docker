@@ -50,7 +50,7 @@ public class TourGuideController {
     }
 
     /**
-     * <b>Return a list of Trip providers</b>
+     * <b>Return a list of Trip providers = trip deals personalised with user preferences</b>
      * @param userName mandatory
      * @return json with providers information
      */
