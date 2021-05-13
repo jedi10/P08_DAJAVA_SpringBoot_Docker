@@ -209,12 +209,12 @@ class TourGuideServiceTest {
         tourGuideService.addUser(user);//without updated preferences
 
         //When
-        User userUpdated = tourGuideService.setUserPreferences(user.getUserName(), userPreferencesGiven);
+        Map<String, UserPreferencesDTO> userUpdated = tourGuideService.setUserPreferences(user.getUserName(), userPreferencesGiven);
         tourGuideService.tracker.stopTracking();
 
         //THEN
         assertNotNull(userUpdated);
         assertEquals(userPreferencesGiven.getHighPricePoint(),
-                (userUpdated.getUserPreferences().getHighPricePoint().getNumber().doubleValue()));
+                (userUpdated.get(user.getUserName()).getHighPricePoint()));
     }
 }
