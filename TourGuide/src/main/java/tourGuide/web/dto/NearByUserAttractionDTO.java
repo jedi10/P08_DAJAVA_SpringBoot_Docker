@@ -23,6 +23,7 @@ public class NearByUserAttractionDTO {
      * @param user mandatory
      * @param userLocation mandatory
      * @param tourist_attractions mandatory
+     * @param rewardCentral RewardCentral Type
      */
     public NearByUserAttractionDTO(User user, VisitedLocation userLocation, List<NearByAttraction> tourist_attractions, RewardCentral rewardCentral) {
         this.userLat = userLocation.location.latitude;

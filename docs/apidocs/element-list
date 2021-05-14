@@ -1,6 +1,7 @@
 tourGuide
+tourGuide.domain
 tourGuide.helper
 tourGuide.service
 tourGuide.tool
 tourGuide.tracker
-tourGuide.user
+tourGuide.web.dto

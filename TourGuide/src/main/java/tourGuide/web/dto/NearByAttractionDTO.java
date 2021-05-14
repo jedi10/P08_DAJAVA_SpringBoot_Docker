@@ -20,6 +20,7 @@ public class NearByAttractionDTO {
          * <b>Constructor</b>
          * @param nearByAttraction mandatory - Attraction Type
          * @param user mandatory - User Type
+         * @param rewardCentral - RewardCentral Type
          */
         public NearByAttractionDTO(NearByAttraction nearByAttraction, User user, RewardCentral rewardCentral) {
             this.attractionName = nearByAttraction.getAttractionName();
