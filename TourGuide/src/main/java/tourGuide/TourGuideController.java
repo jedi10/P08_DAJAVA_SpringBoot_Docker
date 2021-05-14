@@ -39,7 +39,12 @@ public class TourGuideController {
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
 		return JsonStream.serialize(visitedLocation.location);
     }
-    
+
+    /**
+     * <b>Return User Location with the 5 closest attractions</b>
+     * @param userName mandatory string
+     * @return json object containing user actual location and the 5 closest attractions
+     */
     @RequestMapping("/getNearbyAttractions")
     public NearByUserAttractionDTO getNearbyAttractions(@RequestParam String userName) {
         NearByUserAttractionDTO nearByUserAttractionDTO = tourGuideService.getNearByAttractions(getUser(userName));
@@ -51,7 +56,13 @@ public class TourGuideController {
     public String getRewards(@RequestParam String userName) {
     	return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));
     }
-    
+
+    /**
+     * <b>Return all users with their actual locations</b>
+     * <p>return json object with UserId and longitude and latitude per each</p>
+     *
+     * @return all locations of users who are using TourGuide
+     */
     @RequestMapping("/getAllCurrentLocations")
     public Map<String, Location> getAllCurrentLocations() {
         Map<String, Location> currentLocations = tourGuideService.getAllCurrentLocations();
@@ -61,7 +72,7 @@ public class TourGuideController {
 
     /**
      * <b>Return a list of Trip providers = trip deals personalised with user preferences</b>
-     * @param userName mandatory
+     * @param userName mandatory string
      * @return json with providers information
      */
     @RequestMapping("/getTripDeals")

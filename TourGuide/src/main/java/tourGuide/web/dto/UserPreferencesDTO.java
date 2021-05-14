@@ -5,6 +5,10 @@ import tourGuide.domain.UserPreferences;
 
 import javax.money.Monetary;
 
+/**
+ * <b>Used to format endpoint response /setUserPreference and /getUserPreferences</b>
+ * @see tourGuide.service.TourGuideService#setUserPreferences(String, UserPreferencesDTO)
+ */
 public class UserPreferencesDTO {
     private int attractionProximity = Integer.MAX_VALUE;
     private String currency = "USD";
@@ -15,7 +19,19 @@ public class UserPreferencesDTO {
     private int numberOfAdults = 1;
     private int numberOfChildren = 0;
 
-    public UserPreferencesDTO(int attractionProximity, String currency, int lowerPricePoint, int highPricePoint, int tripDuration, int ticketQuantity, int numberOfAdults, int numberOfChildren) {
+    /**
+     * <b>Constructor</b>
+     * @param attractionProximity integer
+     * @param currency string
+     * @param lowerPricePoint integer
+     * @param highPricePoint integer
+     * @param tripDuration integer
+     * @param ticketQuantity integer
+     * @param numberOfAdults integer
+     * @param numberOfChildren integer
+     */
+    public UserPreferencesDTO(int attractionProximity, String currency, int lowerPricePoint, int highPricePoint,
+                              int tripDuration, int ticketQuantity, int numberOfAdults, int numberOfChildren) {
         this.attractionProximity = attractionProximity;
         this.currency = currency;
         this.lowerPricePoint = lowerPricePoint;
@@ -26,6 +42,11 @@ public class UserPreferencesDTO {
         this.numberOfChildren = numberOfChildren;
     }
 
+    /**
+     * <b>Mapper convertFromDTO</b>
+     * @param userPreferencesDTO mandatory
+     * @return UserPreferences
+     */
     public static UserPreferences convertFromDTO(UserPreferencesDTO userPreferencesDTO){
         return new UserPreferences(
                 userPreferencesDTO.getAttractionProximity(),
@@ -38,6 +59,11 @@ public class UserPreferencesDTO {
                 userPreferencesDTO.getNumberOfChildren());
     }
 
+    /**
+     * <b>Mapper convertToDTO</b>
+     * @param userPreferences mandatory
+     * @return UserPreferencesDTO
+     */
     public static UserPreferencesDTO convertToDTO(UserPreferences userPreferences){
         return new UserPreferencesDTO(
                 userPreferences.getAttractionProximity(),
