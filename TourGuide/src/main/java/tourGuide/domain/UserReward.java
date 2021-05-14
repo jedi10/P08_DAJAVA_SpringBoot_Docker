@@ -1,4 +1,4 @@
-package tourGuide.user;
+package tourGuide.domain;
 
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
@@ -19,6 +19,14 @@ public class UserReward {
 		this.attraction = attraction;
 	}
 
+	public VisitedLocation getVisitedLocation() {
+		return visitedLocation;
+	}
+
+	public Attraction getAttraction() {
+		return attraction;
+	}
+
 	public void setRewardPoints(int rewardPoints) {
 		this.rewardPoints = rewardPoints;
 	}
@@ -26,5 +34,6 @@ public class UserReward {
 	public int getRewardPoints() {
 		return rewardPoints;
 	}
-	
+
+
 }

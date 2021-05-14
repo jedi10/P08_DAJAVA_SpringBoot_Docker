@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NearByAttraction.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TourGuide</a> &gt; <a href="index.source.html" class="el_package">tourGuide.domain</a> &gt; <span class="el_source">NearByAttraction.java</span></div><h1>NearByAttraction.java</h1><pre class="source lang-java linenums">package tourGuide.domain;
+
+import gpsUtil.location.Attraction;
+
+import java.util.UUID;
+
+/**
+ * &lt;b&gt;Used with TourGuideService.getNearByAttractions Service&lt;/b&gt;
+ * @see tourGuide.service.TourGuideService#getNearByAttractions(User)
+ */
+public class NearByAttraction {
+    private String attractionName;
+    private Double attractionLat;
+    private Double attractionLong;
+    private Double distance;
+    private UUID attractionId;
+
+    /**
+     * &lt;b&gt;Constructor NearByAttraction&lt;/b&gt;
+     * @param attraction mandatory - Attraction Type
+     * @param distance mandatory - Double Type
+     */
+<span class="fc" id="L23">    public NearByAttraction(Attraction attraction, Double distance) {</span>
+<span class="fc" id="L24">        this.attractionName = attraction.attractionName;</span>
+<span class="fc" id="L25">        this.attractionLat = attraction.latitude;</span>
+<span class="fc" id="L26">        this.attractionLong = attraction.longitude;</span>
+<span class="fc" id="L27">        this.attractionId = attraction.attractionId;</span>
+<span class="fc" id="L28">        this.distance = distance;</span>
+<span class="fc" id="L29">    }</span>
+
+    public String getAttractionName() {
+<span class="fc" id="L32">        return attractionName;</span>
+    }
+
+    public void setAttractionName(String attractionName) {
+<span class="fc" id="L36">        this.attractionName = attractionName;</span>
+<span class="fc" id="L37">    }</span>
+
+    public Double getAttractionLat() {
+<span class="fc" id="L40">        return attractionLat;</span>
+    }
+
+    public void setAttractionLat(Double attractionLat) {
+<span class="fc" id="L44">        this.attractionLat = attractionLat;</span>
+<span class="fc" id="L45">    }</span>
+
+    public Double getAttractionLong() {
+<span class="fc" id="L48">        return attractionLong;</span>
+    }
+
+    public void setAttractionLong(Double attractionLong) {
+<span class="fc" id="L52">        this.attractionLong = attractionLong;</span>
+<span class="fc" id="L53">    }</span>
+
+    public Double getDistance() {
+<span class="fc" id="L56">        return distance;</span>
+    }
+
+    public void setDistance(Double distance) {
+<span class="fc" id="L60">        this.distance = distance;</span>
+<span class="fc" id="L61">    }</span>
+
+    public UUID getAttractionId() {
+<span class="fc" id="L64">        return attractionId;</span>
+    }
+
+    public void setAttractionId(UUID attractionId) {
+<span class="fc" id="L68">        this.attractionId = attractionId;</span>
+<span class="fc" id="L69">    }</span>
+}
+
+
+//https://www.javaguides.net/2019/04/jackson-ignore-fields-or-properties-on-serialization.html
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
