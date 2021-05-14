@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ListTools.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TourGuide</a> &gt; <a href="index.source.html" class="el_package">tourGuide.tool</a> &gt; <span class="el_source">ListTools.java</span></div><h1>ListTools.java</h1><pre class="source lang-java linenums">package tourGuide.tool;
+
+import tourGuide.domain.User;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+<span class="nc" id="L9">public class ListTools {</span>
+
+    public static List&lt;List&lt;User&gt;&gt; switchUserList(List&lt;User&gt; allUsers ){
+<span class="nc" id="L12">        List&lt;User&gt; finalAllUsers = allUsers;</span>
+<span class="nc" id="L13">        int midIndex = (((allUsers.size()) / 2) - 1);</span>
+<span class="nc" id="L14">        List&lt;List&lt;User&gt; &gt; lists = new ArrayList&lt;&gt;(</span>
+<span class="nc" id="L15">                allUsers.stream()</span>
+<span class="nc bnc" id="L16" title="All 2 branches missed.">                        .collect(Collectors.partitioningBy(s -&gt; finalAllUsers.indexOf(s) &gt; midIndex))  //https://www.geeksforgeeks.org/split-a-list-into-two-halves-in-java/</span>
+<span class="nc" id="L17">                        .values());</span>
+<span class="nc" id="L18">        return lists;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
