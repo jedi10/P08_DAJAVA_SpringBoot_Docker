@@ -3,6 +3,7 @@ package tourGuide;
 import java.util.List;
 import java.util.Map;
 
+import gpsUtil.location.Location;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import gpsUtil.location.VisitedLocation;
 import tourGuide.domain.UserPreferences;
 import tourGuide.service.TourGuideService;
 import tourGuide.domain.User;
+import tourGuide.web.dto.NearByUserAttractionDTO;
 import tourGuide.web.dto.UserPreferencesDTO;
 import tripPricer.Provider;
 
@@ -39,8 +41,10 @@ public class TourGuideController {
     }
     
     @RequestMapping("/getNearbyAttractions")
-    public String getNearbyAttractions(@RequestParam String userName) {
-    	return JsonStream.serialize(tourGuideService.getNearByAttractions(getUser(userName)));
+    public NearByUserAttractionDTO getNearbyAttractions(@RequestParam String userName) {
+        NearByUserAttractionDTO nearByUserAttractionDTO = tourGuideService.getNearByAttractions(getUser(userName));
+        logger.info("Call getNearbyAttractions endpoint (get user's nearby attractions)");
+    	return nearByUserAttractionDTO;
     }
     
     @RequestMapping("/getRewards") 
@@ -49,8 +53,10 @@ public class TourGuideController {
     }
     
     @RequestMapping("/getAllCurrentLocations")
-    public String getAllCurrentLocations() {
-    	return JsonStream.serialize(tourGuideService.getAllCurrentLocations());
+    public Map<String, Location> getAllCurrentLocations() {
+        Map<String, Location> currentLocations = tourGuideService.getAllCurrentLocations();
+        logger.info("Call getAllCurrentLocations endpoint (get all users locations)");
+    	return currentLocations;
     }
 
     /**
@@ -59,10 +65,10 @@ public class TourGuideController {
      * @return json with providers information
      */
     @RequestMapping("/getTripDeals")
-    public String getTripDeals(@RequestParam String userName) {
+    public List<Provider> getTripDeals(@RequestParam String userName) {
     	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
         logger.info("Call getTripDeals endpoint (get user's personalized trip deals)");
-    	return JsonStream.serialize(providers);
+    	return providers;
     }
 
     /**
@@ -72,11 +78,11 @@ public class TourGuideController {
      * @return user updated
      */
     @RequestMapping("/setUserPreferences")
-    public String setUserPreferences(@RequestParam String userName,
+    public Map<String, UserPreferencesDTO> setUserPreferences(@RequestParam String userName,
                                      @RequestBody UserPreferencesDTO userPreferences) {
         Map<String, UserPreferencesDTO> userUpdated = tourGuideService.setUserPreferences(userName, userPreferences);
         logger.info("Call setUserPreferences endpoint");
-        return JsonStream.serialize(userUpdated);
+        return userUpdated;
     }
 
     /**
