@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jsoniter.output.JsonStream;
 
 import gpsUtil.location.VisitedLocation;
-import tourGuide.domain.UserPreferences;
 import tourGuide.service.TourGuideService;
 import tourGuide.domain.User;
 import tourGuide.web.dto.NearByUserAttractionDTO;
