@@ -1,0 +1,10 @@
+# https://hub.docker.com/_/openjdk
+FROM openjdk:11
+LABEL administrator="kyle10_dev@outlook.fr"
+EXPOSE 8081:8080
+ARG JAR_FILE=build/libs/*.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
+
+
+# https://mkyong.com/docker/docker-and-java-application-examples/
