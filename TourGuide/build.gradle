@@ -55,6 +55,11 @@ dependencies {
     testCompile("org.junit.jupiter:junit-jupiter-params:5.7.1")
     //https://mvnrepository.com/artifact/pl.pojo/pojo-tester
     testCompile group: 'pl.pojo', name: 'pojo-tester', version: '0.7.6'
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testCompileOnly 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 }
 
 test {
