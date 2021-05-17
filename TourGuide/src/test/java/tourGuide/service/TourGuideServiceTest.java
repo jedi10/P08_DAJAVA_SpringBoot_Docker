@@ -58,10 +58,10 @@ class TourGuideServiceTest {
 
         tourGuideService.addUser(user);
         tourGuideService.addUser(user2);
+        tourGuideService.tracker.stopTracking();
 
         VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
         VisitedLocation visitedLocation2 = tourGuideService.trackUserLocation(user2);
-        tourGuideService.tracker.stopTracking();
 
         List<User> allUsers = tourGuideService.getAllUsers();
         assertTrue(allUsers.size() == 2);
