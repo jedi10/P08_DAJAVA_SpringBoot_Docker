@@ -23,43 +23,44 @@ public class NearByUserAttractionDTO {
      * @param user mandatory
      * @param userLocation mandatory
      * @param tourist_attractions mandatory
+     * @param rewardCentral RewardCentral Type
      */
-<span class="fc" id="L27">    public NearByUserAttractionDTO(User user, VisitedLocation userLocation, List&lt;NearByAttraction&gt; tourist_attractions, RewardCentral rewardCentral) {</span>
-<span class="fc" id="L28">        this.userLat = userLocation.location.latitude;</span>
-<span class="fc" id="L29">        this.userLong = userLocation.location.longitude;</span>
-<span class="fc" id="L30">        convertNearByLocationToDTO(user, tourist_attractions, rewardCentral);</span>
-<span class="fc" id="L31">    }</span>
+<span class="fc" id="L28">    public NearByUserAttractionDTO(User user, VisitedLocation userLocation, List&lt;NearByAttraction&gt; tourist_attractions, RewardCentral rewardCentral) {</span>
+<span class="fc" id="L29">        this.userLat = userLocation.location.latitude;</span>
+<span class="fc" id="L30">        this.userLong = userLocation.location.longitude;</span>
+<span class="fc" id="L31">        convertNearByLocationToDTO(user, tourist_attractions, rewardCentral);</span>
+<span class="fc" id="L32">    }</span>
 
 
     public void convertNearByLocationToDTO(User user, List&lt;NearByAttraction&gt; nearByAttractions, RewardCentral rewardCentral){
-<span class="fc" id="L35">        List&lt;NearByAttractionDTO&gt; result = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L36">        nearByAttractions.forEach(nearByAttraction-&gt;</span>
-<span class="fc" id="L37">                result.add(new NearByAttractionDTO(nearByAttraction, user, rewardCentral)));</span>
-<span class="fc" id="L38">        tourist_attractions = result;</span>
-<span class="fc" id="L39">    }</span>
+<span class="fc" id="L36">        List&lt;NearByAttractionDTO&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L37">        nearByAttractions.forEach(nearByAttraction-&gt;</span>
+<span class="fc" id="L38">                result.add(new NearByAttractionDTO(nearByAttraction, user, rewardCentral)));</span>
+<span class="fc" id="L39">        tourist_attractions = result;</span>
+<span class="fc" id="L40">    }</span>
 
     public Double getUserLat() {
-<span class="fc" id="L42">        return userLat;</span>
+<span class="fc" id="L43">        return userLat;</span>
     }
 
     public void setUserLat(Double userLat) {
-<span class="fc" id="L46">        this.userLat = userLat;</span>
-<span class="fc" id="L47">    }</span>
+<span class="fc" id="L47">        this.userLat = userLat;</span>
+<span class="fc" id="L48">    }</span>
 
     public Double getUserLong() {
-<span class="fc" id="L50">        return userLong;</span>
+<span class="fc" id="L51">        return userLong;</span>
     }
 
     public void setUserLong(Double userLong) {
-<span class="fc" id="L54">        this.userLong = userLong;</span>
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L55">        this.userLong = userLong;</span>
+<span class="fc" id="L56">    }</span>
 
     public List&lt;NearByAttractionDTO&gt; getTourist_attractions() {
-<span class="fc" id="L58">        return tourist_attractions;</span>
+<span class="fc" id="L59">        return tourist_attractions;</span>
     }
 
     public void setTourist_attractions(List&lt;NearByAttractionDTO&gt; tourist_attractions) {
-<span class="fc" id="L62">        this.tourist_attractions = tourist_attractions;</span>
-<span class="fc" id="L63">    }</span>
+<span class="fc" id="L63">        this.tourist_attractions = tourist_attractions;</span>
+<span class="fc" id="L64">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

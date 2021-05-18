@@ -2,39 +2,24 @@
 
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+<span class="fc" id="L11">@Setter</span>
+<span class="fc" id="L12">@AllArgsConstructor</span>
 public class UserReward {
 
-	public final VisitedLocation visitedLocation;
-	public final Attraction attraction;
-	private int rewardPoints;
-<span class="fc" id="L11">	public UserReward(VisitedLocation visitedLocation, Attraction attraction, int rewardPoints) {</span>
-<span class="fc" id="L12">		this.visitedLocation = visitedLocation;</span>
-<span class="fc" id="L13">		this.attraction = attraction;</span>
-<span class="fc" id="L14">		this.rewardPoints = rewardPoints;</span>
-<span class="fc" id="L15">	}</span>
+<span class="fc" id="L15">	public final VisitedLocation visitedLocation;</span>
+<span class="fc" id="L16">	public final Attraction attraction;</span>
+<span class="fc" id="L17">	private int rewardPoints;</span>
 	
-<span class="fc" id="L17">	public UserReward(VisitedLocation visitedLocation, Attraction attraction) {</span>
-<span class="fc" id="L18">		this.visitedLocation = visitedLocation;</span>
-<span class="fc" id="L19">		this.attraction = attraction;</span>
-<span class="fc" id="L20">	}</span>
-
-	public VisitedLocation getVisitedLocation() {
-<span class="fc" id="L23">		return visitedLocation;</span>
-	}
-
-	public Attraction getAttraction() {
-<span class="fc" id="L27">		return attraction;</span>
-	}
-
-	public void setRewardPoints(int rewardPoints) {
-<span class="fc" id="L31">		this.rewardPoints = rewardPoints;</span>
-<span class="fc" id="L32">	}</span>
-	
-	public int getRewardPoints() {
-<span class="fc" id="L35">		return rewardPoints;</span>
-	}
-
+<span class="fc" id="L19">	public UserReward(VisitedLocation visitedLocation, Attraction attraction) {</span>
+<span class="fc" id="L20">		this.visitedLocation = visitedLocation;</span>
+<span class="fc" id="L21">		this.attraction = attraction;</span>
+<span class="fc" id="L22">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
