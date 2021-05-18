@@ -1,5 +1,34 @@
 # P08_DAJAVA_SpringBoot_Docker
 
+#Project Presentation
+
+TourGuide is a travel and entertainment application.
+
+## You can get :
+* All User's UUID and their location
+  * http://localhost:8080/getAllCurrentLocations
+* User's nearby attractions
+  * http://localhost:8080/getNearbyAttractions?userName=internalUser0 
+* User's trip deals
+  * http://localhost:8080/getTripDeals?userName=internalUser0
+* User's trip preferences
+  * http://localhost:8080/getUserPreferences?userName=internalUser0
+## You can set (POST):
+* User's trip preferences
+  * http://localhost:8080/setUserPreferences?userName=internalUser0
+  * user's preferences JSON File (can be used with Postman Software)
+   
+        {
+          "attractionProximity": 2147483647,
+          "currency": "USD",
+          "lowerPricePoint": 0,
+          "highPricePoint": 400,
+          "tripDuration": 1,
+          "ticketQuantity": 1,
+          "numberOfAdults": 1,
+          "numberOfChildren": 0
+        }  
+ 
 #Project Prerequisites and dependencies 
     Docker 20.10.6+
     Java 11 JDK (or +)
