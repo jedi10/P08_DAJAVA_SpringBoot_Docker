@@ -140,17 +140,7 @@ public class TourGuideService {
 	 */
 	public Map<String, UserPreferencesDTO> setUserPreferences(String username, UserPreferencesDTO userPreferencesDTO) {
 		User user = getUser(username);
-		UserPreferencesDTO.convertFromDTO(userPreferencesDTO);
-		UserPreferences userPreferences = new UserPreferences(
-				userPreferencesDTO.getAttractionProximity(),
-				Monetary.getCurrency(userPreferencesDTO.getCurrency()),
-				Money.of(userPreferencesDTO.getLowerPricePoint(), Monetary.getCurrency(userPreferencesDTO.getCurrency())),
-				Money.of(userPreferencesDTO.getHighPricePoint(), Monetary.getCurrency(userPreferencesDTO.getCurrency())),
-				userPreferencesDTO.getTripDuration(),
-				userPreferencesDTO.getTicketQuantity(),
-				userPreferencesDTO.getNumberOfAdults(),
-				userPreferencesDTO.getNumberOfChildren());
-
+		UserPreferences userPreferences = UserPreferencesDTO.convertFromDTO(userPreferencesDTO);
 		user.setUserPreferences(userPreferences);
 		int userIndex = this.getAllUsers().indexOf(user);
 		this.getAllUsers().get(userIndex).setUserPreferences(userPreferences);

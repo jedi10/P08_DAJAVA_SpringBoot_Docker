@@ -58,10 +58,10 @@ class TourGuideServiceTest {
 
         tourGuideService.addUser(user);
         tourGuideService.addUser(user2);
+        tourGuideService.tracker.stopTracking();
 
         VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
         VisitedLocation visitedLocation2 = tourGuideService.trackUserLocation(user2);
-        tourGuideService.tracker.stopTracking();
 
         List<User> allUsers = tourGuideService.getAllUsers();
         assertTrue(allUsers.size() == 2);
@@ -74,10 +74,19 @@ class TourGuideServiceTest {
         //Then
         assertNotNull(currentLocationsMap);
         assertEquals(2, currentLocationsMap.size());
-        assertEquals(visitedLocation.location.latitude, currentLocationsMap.get(user.getUserId().toString()).latitude, 0.0);
-        assertEquals(visitedLocation.location.longitude, currentLocationsMap.get(user.getUserId().toString()).longitude, 0.0);
-        assertEquals(visitedLocation2.location.latitude, currentLocationsMap.get(user2.getUserId().toString()).latitude, 0.0);
-        assertEquals(visitedLocation2.location.longitude, currentLocationsMap.get(user2.getUserId().toString()).longitude, 0.0);
+        //Be sure to get users created in this test
+        int userIndex = tourGuideService.getAllUsers().indexOf(user);
+        int user2Index = tourGuideService.getAllUsers().indexOf(user2);
+        User userResult = tourGuideService.getAllUsers().get(userIndex);
+        User user2Result = tourGuideService.getAllUsers().get(user2Index);
+        assertEquals(visitedLocation.location.latitude,
+                currentLocationsMap.get(userResult.getUserId().toString()).latitude, 0.0);
+        assertEquals(visitedLocation.location.longitude,
+                currentLocationsMap.get(userResult.getUserId().toString()).longitude, 0.0);
+        assertEquals(visitedLocation2.location.latitude,
+                currentLocationsMap.get(user2Result.getUserId().toString()).latitude, 0.0);
+        assertEquals(visitedLocation2.location.longitude,
+                currentLocationsMap.get(user2Result.getUserId().toString()).longitude, 0.0);
     }
 
     @Order(2)

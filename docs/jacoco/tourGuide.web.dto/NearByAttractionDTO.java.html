@@ -20,58 +20,59 @@ public class NearByAttractionDTO {
          * &lt;b&gt;Constructor&lt;/b&gt;
          * @param nearByAttraction mandatory - Attraction Type
          * @param user mandatory - User Type
+         * @param rewardCentral - RewardCentral Type
          */
-<span class="fc" id="L24">        public NearByAttractionDTO(NearByAttraction nearByAttraction, User user, RewardCentral rewardCentral) {</span>
-<span class="fc" id="L25">            this.attractionName = nearByAttraction.getAttractionName();</span>
-<span class="fc" id="L26">            this.attractionLat = nearByAttraction.getAttractionLat();</span>
-<span class="fc" id="L27">            this.attractionLong = nearByAttraction.getAttractionLong();</span>
-<span class="fc" id="L28">            this.distance = nearByAttraction.getDistance();</span>
-<span class="fc" id="L29">            calculateAttractionRewards(nearByAttraction, user, rewardCentral);</span>
-<span class="fc" id="L30">        }</span>
+<span class="fc" id="L25">        public NearByAttractionDTO(NearByAttraction nearByAttraction, User user, RewardCentral rewardCentral) {</span>
+<span class="fc" id="L26">            this.attractionName = nearByAttraction.getAttractionName();</span>
+<span class="fc" id="L27">            this.attractionLat = nearByAttraction.getAttractionLat();</span>
+<span class="fc" id="L28">            this.attractionLong = nearByAttraction.getAttractionLong();</span>
+<span class="fc" id="L29">            this.distance = nearByAttraction.getDistance();</span>
+<span class="fc" id="L30">            calculateAttractionRewards(nearByAttraction, user, rewardCentral);</span>
+<span class="fc" id="L31">        }</span>
 
         public void calculateAttractionRewards(NearByAttraction nearByAttraction, User user, RewardCentral rewardCentral){
-<span class="fc" id="L33">            this.rewardsPoints = rewardCentral.getAttractionRewardPoints(nearByAttraction.getAttractionId(), user.getUserId());</span>
-<span class="fc" id="L34">        }</span>
+<span class="fc" id="L34">            this.rewardsPoints = rewardCentral.getAttractionRewardPoints(nearByAttraction.getAttractionId(), user.getUserId());</span>
+<span class="fc" id="L35">        }</span>
 
         public String getAttractionName() {
-<span class="fc" id="L37">            return attractionName;</span>
+<span class="fc" id="L38">            return attractionName;</span>
         }
 
         public void setAttractionName(String attractionName) {
-<span class="fc" id="L41">            this.attractionName = attractionName;</span>
-<span class="fc" id="L42">        }</span>
+<span class="fc" id="L42">            this.attractionName = attractionName;</span>
+<span class="fc" id="L43">        }</span>
 
         public Double getAttractionLat() {
-<span class="fc" id="L45">            return attractionLat;</span>
+<span class="fc" id="L46">            return attractionLat;</span>
         }
 
         public void setAttractionLat(Double attractionLat) {
-<span class="fc" id="L49">            this.attractionLat = attractionLat;</span>
-<span class="fc" id="L50">        }</span>
+<span class="fc" id="L50">            this.attractionLat = attractionLat;</span>
+<span class="fc" id="L51">        }</span>
 
         public Double getAttractionLong() {
-<span class="fc" id="L53">            return attractionLong;</span>
+<span class="fc" id="L54">            return attractionLong;</span>
         }
 
         public void setAttractionLong(Double attractionLong) {
-<span class="fc" id="L57">            this.attractionLong = attractionLong;</span>
-<span class="fc" id="L58">        }</span>
+<span class="fc" id="L58">            this.attractionLong = attractionLong;</span>
+<span class="fc" id="L59">        }</span>
 
         public Double getDistance() {
-<span class="fc" id="L61">            return distance;</span>
+<span class="fc" id="L62">            return distance;</span>
         }
 
         public void setDistance(Double distance) {
-<span class="fc" id="L65">            this.distance = distance;</span>
-<span class="fc" id="L66">        }</span>
+<span class="fc" id="L66">            this.distance = distance;</span>
+<span class="fc" id="L67">        }</span>
 
         public int getRewardsPoints() {
-<span class="fc" id="L69">            return rewardsPoints;</span>
+<span class="fc" id="L70">            return rewardsPoints;</span>
         }
 
         public void setRewardsPoints(int rewardsPoints) {
-<span class="fc" id="L73">            this.rewardsPoints = rewardsPoints;</span>
-<span class="fc" id="L74">        }</span>
+<span class="fc" id="L74">            this.rewardsPoints = rewardsPoints;</span>
+<span class="fc" id="L75">        }</span>
 }
 
 
