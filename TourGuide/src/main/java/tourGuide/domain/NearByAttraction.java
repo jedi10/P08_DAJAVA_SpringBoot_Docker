@@ -1,6 +1,6 @@
 package tourGuide.domain;
 
-import gpsUtil.location.Attraction;
+import tourGuide.domain.Attraction;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

@@ -8,16 +8,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.javamoney.moneta.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
+import tourGuide.tool.GpsUtilLocal;
+import tourGuide.tool.ListTools;
+import tourGuide.domain.Attraction;
+import tourGuide.domain.Location;
+import tourGuide.domain.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourGuide.TourGuideController;
 import tourGuide.domain.NearByAttraction;
@@ -31,12 +30,10 @@ import tourGuide.web.dto.UserPreferencesDTO;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 
-import javax.money.Monetary;
-
 @Service
 public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
-	private final GpsUtil gpsUtil;
+	private final GpsUtilLocal gpsUtil;
 	private final RewardsService rewardsService;
 	private final TripPricer tripPricer = new TripPricer();
 	private final RewardCentral rewardCentral;
@@ -64,7 +61,7 @@ public class TourGuideService {
 		}
 	}
 	
-	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService, RewardCentral rewardCentral) {
+	public TourGuideService(GpsUtilLocal gpsUtil, RewardsService rewardsService, RewardCentral rewardCentral) {
 		this.gpsUtil = gpsUtil;
 		this.rewardCentral = rewardCentral;
 		this.rewardsService = rewardsService;
@@ -200,7 +197,7 @@ public class TourGuideService {
 
 		List<NearByAttraction> nearByAttractionsSorted;
 
-		for(Attraction attraction : gpsUtil.getAttractions()) {
+		for(Attraction attraction : ListTools.getAttractions()) {
 			Double distance = rewardsService.getDistance(
 					new Location(attraction.longitude, attraction.latitude),
 					visitedLocation.location);

@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import gpsUtil.location.VisitedLocation;
+import tourGuide.domain.VisitedLocation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,8 +1,8 @@
 package tourGuide.service;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
+import tourGuide.tool.GpsUtilLocal;
+import tourGuide.domain.Location;
+import tourGuide.domain.VisitedLocation;
 import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,14 +27,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class TourGuideServiceTest {
 
-    private GpsUtil gpsUtil;
+    private GpsUtilLocal gpsUtil;
     private RewardCentral rewardCentral;
     private RewardsService rewardsService;
     private TourGuideService tourGuideService;
 
     @BeforeEach
     private void beforeEach(){
-        gpsUtil = new GpsUtil();
+        gpsUtil = new GpsUtilLocal();
         rewardCentral = new RewardCentral();
         rewardsService = new RewardsService(gpsUtil, new RewardCentral());
         InternalTestHelper.setInternalUserNumber(0);

@@ -3,7 +3,7 @@ package tourGuide;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import gpsUtil.GpsUtil;
+import tourGuide.tool.GpsUtilLocal;
 import rewardCentral.RewardCentral;
 import tourGuide.service.RewardsService;
 
@@ -11,8 +11,8 @@ import tourGuide.service.RewardsService;
 public class TourGuideModule {
 	
 	@Bean
-	public GpsUtil getGpsUtil() {
-		return new GpsUtil();
+	public GpsUtilLocal getGpsUtil() {
+		return new GpsUtilLocal();
 	}
 	
 	@Bean
