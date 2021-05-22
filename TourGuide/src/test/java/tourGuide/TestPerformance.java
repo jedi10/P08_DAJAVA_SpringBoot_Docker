@@ -150,7 +150,7 @@ public class TestPerformance {
 		allUsers.parallelStream().forEach(
 				(user) -> {
 					Runnable runnableTask = () -> {
-						user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
+						user.addToVisitedLocations(new VisitedLocation(user.getUserId(), new Location(attraction.longitude, attraction.latitude), new Date()));
 						rewardsService.calculateRewards(user);
 						assertTrue(user.getUserRewards().size() > 0);
 						System.out.println("ok passed");
