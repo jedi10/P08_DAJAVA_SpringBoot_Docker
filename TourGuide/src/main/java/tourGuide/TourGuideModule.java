@@ -3,6 +3,7 @@ package tourGuide;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.web.client.RestTemplate;
 import tourGuide.tool.GpsUtilLocal;
 import rewardCentral.RewardCentral;
 import tourGuide.service.RewardsService;
@@ -23,6 +24,11 @@ public class TourGuideModule {
 	@Bean
 	public RewardCentral getRewardCentral() {
 		return new RewardCentral();
+	}
+
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
 	}
 	
 }
