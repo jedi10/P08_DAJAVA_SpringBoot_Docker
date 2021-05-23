@@ -8,3 +8,4 @@ ENTRYPOINT ["java","-jar","/app.jar"]
 
 
 # https://mkyong.com/docker/docker-and-java-application-examples/
+# https://spring.io/guides/topicals/spring-boot-docker/
