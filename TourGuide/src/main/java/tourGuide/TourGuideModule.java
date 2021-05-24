@@ -1,14 +1,17 @@
 package tourGuide;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.web.client.RestTemplate;
+import tourGuide.configuration.MicroserviceProperties;
 import tourGuide.tool.GpsUtilLocal;
 import rewardCentral.RewardCentral;
 import tourGuide.service.RewardsService;
 
 @Configuration
+@EnableConfigurationProperties(MicroserviceProperties.class)
 public class TourGuideModule {
 	
 	@Bean

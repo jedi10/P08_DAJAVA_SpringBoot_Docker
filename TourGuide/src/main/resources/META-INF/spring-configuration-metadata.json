@@ -1,0 +1,24 @@
+{
+  "groups": [
+    {
+      "name": "microservice",
+      "type": "tourGuide.configuration.MicroserviceProperties",
+      "sourceType": "tourGuide.configuration.MicroserviceProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "microservice.address",
+      "type": "java.lang.String",
+      "sourceType": "tourGuide.configuration.MicroserviceProperties",
+      "defaultValue": "http:\/\/localhost:"
+    },
+    {
+      "name": "microservice.gpsutil-port",
+      "type": "java.lang.String",
+      "sourceType": "tourGuide.configuration.MicroserviceProperties",
+      "defaultValue": "8090"
+    }
+  ],
+  "hints": []
+}
