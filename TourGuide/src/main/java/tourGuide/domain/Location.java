@@ -1,13 +1,12 @@
 package tourGuide.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 public class Location {
-    public final double longitude;
     public final double latitude;
+    public final double longitude;
 }

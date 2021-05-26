@@ -10,7 +10,8 @@ import org.springframework.stereotype.Component;
 //@Component
 @Configuration
 @ConfigurationProperties(prefix = "microservice")
-@Data
+@Getter
+@Setter
 public class MicroserviceProperties {
 
     private String address = "http://localhost:";

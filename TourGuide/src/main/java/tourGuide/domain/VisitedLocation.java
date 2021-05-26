@@ -1,5 +1,6 @@
 package tourGuide.domain;
 
+import lombok.Data;
 import tourGuide.domain.Location;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,8 +9,7 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 public class VisitedLocation {
     public final UUID userId;
     public final Location location;
