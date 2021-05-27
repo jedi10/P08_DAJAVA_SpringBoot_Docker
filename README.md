@@ -43,7 +43,7 @@ _Settings/Build-execution-deployment/compiler/annotationProcessors_
 ## with Gradle
     gradle bootRun    
 
-#Containerize app (on local port 8081)
+#Containerize main app (on local port 8081)
 ##Build the Jar of the project:
 To get a _.jar_ file of the project in the _build/libs/_ folder:
 ###with console
@@ -74,6 +74,15 @@ At project root:
     docker container rm <container_id || container_name>
     docker rmi -f tourguide
 
+#Containerize main app and all microservice 
+We add a _docker-compose.yml_ in tourguide project to be able to use Docker Compose CLI. 
 
-
+    docker-compose --version
+    docker-compose config (for docker-compose file validation)
+    docker-compose up -d
+    docker-compose ps
+    docker-compose logs -f --tail 5  (show docker container logs)
+    docker-compose stop
+    docker-compose down  (resource destruction)
+* _-d_ run the container in detached mode = in the background
 
