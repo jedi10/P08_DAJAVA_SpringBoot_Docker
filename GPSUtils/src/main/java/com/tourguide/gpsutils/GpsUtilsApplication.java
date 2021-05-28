@@ -1,4 +1,4 @@
-package com.tourguide.gpsutil;
+package com.tourguide.gpsutils;
 
 
 import org.springframework.boot.SpringApplication;
