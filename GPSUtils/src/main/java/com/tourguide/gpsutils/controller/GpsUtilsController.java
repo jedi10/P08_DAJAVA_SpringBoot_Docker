@@ -31,7 +31,7 @@ public class GpsUtilsController {
     @GetMapping("/userLocation")
     public VisitedLocation getUserLocation(@RequestParam UUID userId)
     {
-        logger.debug("Call to gpsUtils.getUSerLocation({})", userId );
+        logger.info("GPSUtil Microservice: call to gpsUtils.getUSerLocation({})", userId );
         return gpsUtilsService.getUserLocation(userId);
     }
 
@@ -42,7 +42,7 @@ public class GpsUtilsController {
     @GetMapping("/attractions")
     public List<Attraction> getAttractions()
     {
-        logger.debug("Call to gpsUtils.getAttractions()");
+        logger.info("GPSUtil Microservice: call to gpsUtils.getAttractions()");
         return gpsUtilsService.getAttractions();
     }
 }
