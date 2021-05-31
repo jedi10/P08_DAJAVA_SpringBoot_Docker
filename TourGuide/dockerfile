@@ -1,9 +1,9 @@
 # https://hub.docker.com/_/openjdk
 FROM openjdk:11
-LABEL administrator="kyle10_dev@outlook.fr"
+#LABEL administrator="kyle10_dev@outlook.fr"
 #EXPOSE 8081:8080
 ARG JAR_FILE=build/libs/*.jar
-COPY ${JAR_FILE} app.jar
+COPY ${JAR_FILE} tourGuide.jar
 ENTRYPOINT ["java","-jar","/tourGuide.jar"]
 
 

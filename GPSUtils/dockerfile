@@ -1,8 +1,8 @@
 # https://hub.docker.com/_/openjdk
 FROM openjdk:11
-LABEL administrator="kyle10_dev@outlook.fr"
+#LABEL administrator="kyle10_dev@outlook.fr"
 ARG JAR_FILE=build/libs/*.jar
-COPY ${JAR_FILE} app.jar
+COPY ${JAR_FILE} gpsUtil.jar
 ENTRYPOINT ["java","-jar","/gpsUtil.jar"]
 
 

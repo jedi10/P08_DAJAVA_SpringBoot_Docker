@@ -69,7 +69,7 @@ At project root:
 ##Stop and delete docker's container and image
 At project root:
 
-    docker container ls (to retrieve container_id or name)
+    docker container ls -a (to retrieve container_id or name)
     docker container stop <container_id || container_name>
     docker container rm <container_id || container_name>
     docker rmi -f tourguide
@@ -79,10 +79,10 @@ We add a _docker-compose.yml_ in tourguide project to be able to use Docker Comp
 
     docker-compose --version
     docker-compose config (for docker-compose file validation)
-    docker-compose up -d
-    docker-compose ps
-    docker-compose logs -f --tail 5  (show docker container logs)
-    docker-compose stop
-    docker-compose down  (resource destruction)
+    docker compose up -d
+    docker compose ps -a
+    docker compose logs -f --tail 5  (show docker container logs)
+    docker compose <stop || start>
+    docker compose down  (resource destruction)
 * _-d_ run the container in detached mode = in the background
 
