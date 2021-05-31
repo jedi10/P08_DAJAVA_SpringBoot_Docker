@@ -14,7 +14,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: "jacoco"
 apply plugin: 'application'
-mainClassName = 'com.tourguide.gpsutil.GpsUtilsApplication'
+mainClassName = 'com.tourguide.gpsutils.Application'
 
 
 bootJar {
