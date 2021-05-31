@@ -3,8 +3,8 @@ package com.tourguide.gpsutils.controller;
 import com.tourguide.gpsutils.service.IGpsUtilsService;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 @RestController
 public class GpsUtilsController {
-    private static final Logger logger = LogManager.getLogger(GpsUtilsController.class);
+    private static final Logger logger = LoggerFactory.getLogger(GpsUtilsController.class);
 
     @Autowired
     private IGpsUtilsService gpsUtilsService;
