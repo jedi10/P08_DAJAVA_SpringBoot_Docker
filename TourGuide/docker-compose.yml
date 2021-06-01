@@ -7,7 +7,7 @@ services :
       dockerfile: ./dockerfile
     container_name: tourguide
     ports :
-      - "127.0.0.1:8081:8080"
+      - "127.0.0.1:8081:8081"
     networks:
       - default
     depends_on:
@@ -21,7 +21,7 @@ services :
       dockerfile: ../GPSUtils/dockerfile
     container_name: gpsutil
     ports :
-      - "127.0.0.1:8090:8080"
+      - "127.0.0.1:8090:8090"
 
 ####https://stackoverflow.com/questions/27068596/how-to-include-files-outside-of-dockers-build-context
 #### https://stackoverflow.com/questions/60280192/how-to-build-docker-image-by-docker-compose-yml
