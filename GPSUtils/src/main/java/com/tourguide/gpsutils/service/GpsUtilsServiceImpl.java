@@ -39,13 +39,13 @@ public class GpsUtilsServiceImpl implements IGpsUtilsService {
 
     @Override
     public VisitedLocation getUserLocation(UUID userId) {
-        logger.debug("Call to gpsUtil.getUSerLocation(" + userId + ")");
+        logger.debug("Call to gpsUtils.getUserLocation({})", userId );
         return gpsUtil.getUserLocation(userId);
     }
 
     @Override
     public List<Attraction> getAttractions() {
-        logger.debug("Call to gpsUtil.getAttractions()");
+        logger.debug("Call to gpsUtils.getAttractions()");
         return gpsUtil.getAttractions();
     }
 }
