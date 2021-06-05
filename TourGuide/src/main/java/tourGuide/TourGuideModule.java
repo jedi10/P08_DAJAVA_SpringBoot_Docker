@@ -26,7 +26,7 @@ public class TourGuideModule {
 	
 	@Bean
 	public RewardsService getRewardsService() {
-		return new RewardsService(getGpsUtil(), getRewardCentral());
+		return new RewardsService(getGpsUtil(), getGpsUtilService(), getRewardCentral());
 	}
 	
 	@Bean
@@ -41,10 +41,10 @@ public class TourGuideModule {
 				.setReadTimeout(Duration.ofSeconds(2))
 				.build();
 	}
-	/**
+
 	@Bean
 	public GpsUtilRestService getGpsUtilService() {
-		return new GpsUtilRestService(requestRestTemplate(new RestTemplateBuilder()));
-	}**/
+		return new GpsUtilRestService();
+	}
 
 }

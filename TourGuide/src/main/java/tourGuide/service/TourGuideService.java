@@ -212,7 +212,13 @@ public class TourGuideService {
 
 		List<NearByAttraction> nearByAttractionsSorted;
 
-		for(Attraction attraction : ListTools.getAttractions()) {
+		List<Attraction> attractionFullList = new ArrayList<>();
+		if (!microserviceProperties.getDockerActive().equals("true")){
+			attractionFullList.addAll(ListTools.getAttractions());
+		} else {
+			attractionFullList.addAll(gpsUtilRestService.getAttractions());
+		}
+		for(Attraction attraction : attractionFullList) {
 			Double distance = rewardsService.getDistance(
 					new Location(attraction.longitude, attraction.latitude),
 					visitedLocation.location);

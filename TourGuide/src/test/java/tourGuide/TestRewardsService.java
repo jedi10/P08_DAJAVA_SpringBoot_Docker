@@ -32,7 +32,7 @@ public class TestRewardsService {
 	public void userGetRewards() {
 		GpsUtilLocal gpsUtil = new GpsUtilLocal();
 		RewardCentral rewardCentral = new RewardCentral();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtil, gpsUtilRestService, new RewardCentral());
 
 		InternalTestHelper.setInternalUserNumber(0);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, gpsUtilRestService, rewardsService, rewardCentral);
@@ -49,7 +49,7 @@ public class TestRewardsService {
 	@Test
 	public void isWithinAttractionProximity() {
 		GpsUtilLocal gpsUtil = new GpsUtilLocal();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtil, gpsUtilRestService, new RewardCentral());
 		Attraction attraction = ListTools.getAttractions().get(0);
 		assertTrue(rewardsService.isWithinAttractionProximity(attraction, attraction));
 	}
@@ -59,7 +59,7 @@ public class TestRewardsService {
 	public void nearAllAttractions() {
 		GpsUtilLocal gpsUtil = new GpsUtilLocal();
 		RewardCentral rewardCentral = new RewardCentral();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtil, gpsUtilRestService, new RewardCentral());
 		rewardsService.setProximityBuffer(Integer.MAX_VALUE);
 
 		InternalTestHelper.setInternalUserNumber(1);

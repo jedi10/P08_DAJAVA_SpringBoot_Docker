@@ -2,6 +2,8 @@ package tourGuide.service;
 
 import org.springframework.stereotype.Service;
 
+import tourGuide.configuration.MicroserviceProperties;
+import tourGuide.service.restTemplateService.GpsUtilRestService;
 import tourGuide.tool.GpsUtilLocal;
 import tourGuide.tool.ListTools;
 import tourGuide.domain.Attraction;
@@ -17,16 +19,22 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class RewardsService {
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
 
+	MicroserviceProperties microserviceProperties;
+
 	// proximity in miles
     private int defaultProximityBuffer = 10;
 	private int proximityBuffer = defaultProximityBuffer;
 	private int attractionProximityRange = 200;
 	private final GpsUtilLocal gpsUtil;
+	private final GpsUtilRestService gpsUtilRestService;
 	private final RewardCentral rewardsCentral;
 	
-	public RewardsService(GpsUtilLocal gpsUtil, RewardCentral rewardCentral) {
+	public RewardsService(GpsUtilLocal gpsUtil, GpsUtilRestService gpsUtilRestService,
+						  RewardCentral rewardCentral) {
 		this.gpsUtil = gpsUtil;
+		this.gpsUtilRestService = gpsUtilRestService;
 		this.rewardsCentral = rewardCentral;
+		microserviceProperties = new MicroserviceProperties();
 	}
 	
 	public void setProximityBuffer(int proximityBuffer) {
@@ -42,6 +50,11 @@ public class RewardsService {
 		//https://docs.oracle.com/en/solutions/develop-microservice-java-app/develop-application1.html#GUID-E7D970E1-D1A2-4908-948A-858BE453A3F0
 		CopyOnWriteArrayList<Attraction> attractions = new CopyOnWriteArrayList<>();
 		CopyOnWriteArrayList<VisitedLocation> userLocations = new CopyOnWriteArrayList<>();
+		if (!microserviceProperties.getDockerActive().equals("true")){
+			attractions.addAll(ListTools.getAttractions());
+		} else {
+			attractions.addAll(gpsUtilRestService.getAttractions());
+		}
 		attractions.addAll(ListTools.getAttractions());
 		userLocations.addAll(user.getVisitedLocations());
 

@@ -26,12 +26,11 @@ public class GpsUtilRestService {
 
     MicroserviceProperties microserviceProperties;
     //final String defaultGpsUtilRootUrl = "http://localhost:8090";
-
+    @Autowired
     RestTemplate restTemplate;
 
-    public GpsUtilRestService(RestTemplate requestRestTemplate) {
+    public GpsUtilRestService() {
         microserviceProperties = new MicroserviceProperties();
-        this.restTemplate = requestRestTemplate;
     }
 
     public static final String className = GpsUtilRestService.class.getSimpleName();

@@ -1,8 +1,6 @@
 package tourGuide.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import tourGuide.configuration.MicroserviceProperties;
 import tourGuide.service.restTemplateService.GpsUtilRestService;
@@ -52,7 +50,7 @@ class TourGuideServiceTest {
     private void beforeEach(){
         gpsUtilLocal = new GpsUtilLocal();
         rewardCentral = new RewardCentral();
-        rewardsService = new RewardsService(gpsUtilLocal, new RewardCentral());
+        rewardsService = new RewardsService(gpsUtilLocal, gpsUtilRestService, new RewardCentral());
         InternalTestHelper.setInternalUserNumber(0);
         tourGuideService = new TourGuideService(gpsUtilLocal, gpsUtilRestService, rewardsService, rewardCentral);
         tourGuideService.microserviceProperties = new MicroserviceProperties();
