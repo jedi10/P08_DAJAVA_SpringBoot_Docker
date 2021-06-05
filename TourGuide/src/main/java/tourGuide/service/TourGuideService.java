@@ -10,8 +10,11 @@ import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tourGuide.configuration.MicroserviceProperties;
+import tourGuide.service.restTemplateService.GpsUtilRestService;
 import tourGuide.tool.GpsUtilLocal;
 import tourGuide.tool.ListTools;
 import tourGuide.domain.Attraction;
@@ -33,8 +36,11 @@ import tripPricer.TripPricer;
 @Service
 public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
-	private final GpsUtilLocal gpsUtil;
+
 	MicroserviceProperties microserviceProperties;
+
+	private final GpsUtilLocal gpsUtilLocal;
+	private final GpsUtilRestService gpsUtilRestService;
 	private final RewardsService rewardsService;
 	private final TripPricer tripPricer = new TripPricer();
 	private final RewardCentral rewardCentral;
@@ -62,8 +68,10 @@ public class TourGuideService {
 		}
 	}
 	
-	public TourGuideService(GpsUtilLocal gpsUtil, RewardsService rewardsService, RewardCentral rewardCentral) {
-		this.gpsUtil = gpsUtil;
+	public TourGuideService(GpsUtilLocal gpsUtil, GpsUtilRestService gpsUtilRestService,
+							RewardsService rewardsService, RewardCentral rewardCentral) {
+		this.gpsUtilLocal = gpsUtil;
+		this.gpsUtilRestService = gpsUtilRestService;
 		this.rewardCentral = rewardCentral;
 		this.rewardsService = rewardsService;
 		this.executorService = Executors.newFixedThreadPool(1500);//.newCachedThreadPool()
@@ -171,7 +179,12 @@ public class TourGuideService {
 
 	public VisitedLocation trackUserLocation(User user) {
 		//Task1 - random generator for longitude and latitude with TreadLocalRandom https://www.codeflow.site/fr/article/java-thread-local-random
-		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+		VisitedLocation visitedLocation = null;
+		if (!microserviceProperties.getDockerActive().equals("true")){
+			visitedLocation = gpsUtilLocal.getUserLocation(user.getUserId());
+		} else {
+			visitedLocation = gpsUtilRestService.getUserLocation(user.getUserId());
+		}
 		//Task2 - need visitedLocation to be created
 		user.addToVisitedLocations(visitedLocation);
 		//Task3 - need visited location to be referenced

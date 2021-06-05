@@ -6,8 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import tourGuide.service.restTemplateService.GpsUtilRestService;
 import tourGuide.tool.GpsUtilLocal;
 import tourGuide.tool.ListTools;
 import tourGuide.domain.Attraction;
@@ -19,7 +22,11 @@ import tourGuide.service.TourGuideService;
 import tourGuide.domain.User;
 import tourGuide.domain.UserReward;
 
+@SpringBootTest
 public class TestRewardsService {
+
+	@Autowired
+	private GpsUtilRestService gpsUtilRestService;
 
 	@Test
 	public void userGetRewards() {
@@ -28,7 +35,7 @@ public class TestRewardsService {
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
 		InternalTestHelper.setInternalUserNumber(0);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, rewardCentral);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, gpsUtilRestService, rewardsService, rewardCentral);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		Attraction attraction = ListTools.getAttractions().get(0);
@@ -56,7 +63,7 @@ public class TestRewardsService {
 		rewardsService.setProximityBuffer(Integer.MAX_VALUE);
 
 		InternalTestHelper.setInternalUserNumber(1);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, rewardCentral);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, gpsUtilRestService, rewardsService, rewardCentral);
 		User userGiven = tourGuideService.getAllUsers().get(0);
 		tourGuideService.tracker.stopTracking();
 		//WHEN

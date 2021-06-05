@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 import org.springframework.web.client.RestTemplate;
 import tourGuide.configuration.MicroserviceProperties;
+import tourGuide.service.restTemplateService.GpsUtilRestService;
 import tourGuide.tool.GpsUtilLocal;
 import rewardCentral.RewardCentral;
 import tourGuide.service.RewardsService;
@@ -40,4 +41,10 @@ public class TourGuideModule {
 				.setReadTimeout(Duration.ofSeconds(2))
 				.build();
 	}
+	/**
+	@Bean
+	public GpsUtilRestService getGpsUtilService() {
+		return new GpsUtilRestService(requestRestTemplate(new RestTemplateBuilder()));
+	}**/
+
 }
