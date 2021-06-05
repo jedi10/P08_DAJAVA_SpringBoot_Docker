@@ -1,8 +1,5 @@
 package tourGuide.web.dto;
 
-import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
 import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
