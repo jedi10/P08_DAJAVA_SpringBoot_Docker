@@ -18,6 +18,8 @@ public class MicroserviceProperties {
 
     private String gpsutilPort = "8090";
 
+    private String dockerActive = "true";
+
 }
 
 //https://stackoverflow.com/questions/32058814/spring-boot-custom-variables-in-application-properties

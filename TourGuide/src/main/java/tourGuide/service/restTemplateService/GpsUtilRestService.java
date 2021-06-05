@@ -24,13 +24,13 @@ import java.util.UUID;
 public class GpsUtilRestService {
     private final Logger logger = LoggerFactory.getLogger(GpsUtilRestService.class);
 
-
     MicroserviceProperties microserviceProperties;
     //final String defaultGpsUtilRootUrl = "http://localhost:8090";
 
     RestTemplate restTemplate;
 
     public GpsUtilRestService(RestTemplate requestRestTemplate) {
+        microserviceProperties = new MicroserviceProperties();
         this.restTemplate = requestRestTemplate;
     }
 

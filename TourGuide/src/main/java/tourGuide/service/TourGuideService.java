@@ -34,6 +34,7 @@ import tripPricer.TripPricer;
 public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 	private final GpsUtilLocal gpsUtil;
+	MicroserviceProperties microserviceProperties;
 	private final RewardsService rewardsService;
 	private final TripPricer tripPricer = new TripPricer();
 	private final RewardCentral rewardCentral;
@@ -66,6 +67,7 @@ public class TourGuideService {
 		this.rewardCentral = rewardCentral;
 		this.rewardsService = rewardsService;
 		this.executorService = Executors.newFixedThreadPool(1500);//.newCachedThreadPool()
+		this.microserviceProperties = new MicroserviceProperties();
 		Locale.setDefault(new Locale("en", "US"));
 		
 		if(testMode) {
