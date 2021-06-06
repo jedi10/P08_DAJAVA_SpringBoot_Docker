@@ -14,8 +14,10 @@ class UserPreferencesTest {
         //GIVEN
         final Class<?> classUnderTest = UserPreferences.class;
         //WHEN-THEN
-        assertPojoMethodsFor(classUnderTest)
+        assertPojoMethodsFor(classUnderTest, exclude("lowerPricePoint", "highPricePoint"))
                 .testing(SETTER)
+                .areWellImplemented();
+        assertPojoMethodsFor(classUnderTest)
                 .testing(GETTER)
                 .testing(CONSTRUCTOR)
                 .areWellImplemented();
