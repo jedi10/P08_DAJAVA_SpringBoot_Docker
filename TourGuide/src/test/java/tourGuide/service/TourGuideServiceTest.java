@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * <b>Important: Need Microservice GpsUtil</b>
  * <p>Docker has to be active to load in container GpsUtil Microservice Project</p>
  * <p>You can pass over the docker resource by using the application in local mode: turn MicroserviceProperties.dockerActive to false</p>
- * @see MicroserviceProperties#getDockerActive()
+ * @see tourGuide.configuration.MicroserviceProperties
  */
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
