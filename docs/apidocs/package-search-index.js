@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"tourGuide"},{"l":"tourGuide.domain"},{"l":"tourGuide.helper"},{"l":"tourGuide.service"},{"l":"tourGuide.tool"},{"l":"tourGuide.tracker"},{"l":"tourGuide.web.dto"}]
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"tourGuide"},{"l":"tourGuide.configuration"},{"l":"tourGuide.domain"},{"l":"tourGuide.helper"},{"l":"tourGuide.service"},{"l":"tourGuide.service.restTemplateService"},{"l":"tourGuide.tool"},{"l":"tourGuide.tracker"},{"l":"tourGuide.web.dto"}]
