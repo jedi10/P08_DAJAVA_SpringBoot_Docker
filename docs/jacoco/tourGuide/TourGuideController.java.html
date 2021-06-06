@@ -2,8 +2,9 @@
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-import gpsUtil.location.Location;
+import tourGuide.domain.Location;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jsoniter.output.JsonStream;
 
-import gpsUtil.location.VisitedLocation;
+import tourGuide.domain.VisitedLocation;
 import tourGuide.service.TourGuideService;
 import tourGuide.domain.User;
 import tourGuide.web.dto.NearByUserAttractionDTO;
@@ -22,21 +23,21 @@ import tourGuide.web.dto.UserPreferencesDTO;
 import tripPricer.Provider;
 
 @RestController
-<span class="fc" id="L25">public class TourGuideController {</span>
-<span class="fc" id="L26">    private Logger logger = LoggerFactory.getLogger(TourGuideController.class);</span>
+<span class="fc" id="L26">public class TourGuideController {</span>
+<span class="fc" id="L27">    private Logger logger = LoggerFactory.getLogger(TourGuideController.class);</span>
 
 	@Autowired
 	TourGuideService tourGuideService;
 	
     @RequestMapping(&quot;/&quot;)
     public String index() {
-<span class="nc" id="L33">        return &quot;Greetings from TourGuide!&quot;;</span>
+<span class="nc" id="L34">        return &quot;Greetings from TourGuide!&quot;;</span>
     }
     
     @RequestMapping(&quot;/getLocation&quot;) 
     public String getLocation(@RequestParam String userName) {
-<span class="nc" id="L38">    	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));</span>
-<span class="nc" id="L39">		return JsonStream.serialize(visitedLocation.location);</span>
+<span class="nc" id="L39">    	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));</span>
+<span class="nc" id="L40">		return JsonStream.serialize(visitedLocation.location);</span>
     }
 
     /**
@@ -46,14 +47,14 @@ import tripPricer.Provider;
      */
     @RequestMapping(&quot;/getNearbyAttractions&quot;)
     public NearByUserAttractionDTO getNearbyAttractions(@RequestParam String userName) {
-<span class="nc" id="L49">        NearByUserAttractionDTO nearByUserAttractionDTO = tourGuideService.getNearByAttractions(getUser(userName));</span>
-<span class="nc" id="L50">        logger.info(&quot;Call getNearbyAttractions endpoint (get user's nearby attractions)&quot;);</span>
-<span class="nc" id="L51">    	return nearByUserAttractionDTO;</span>
+<span class="nc" id="L50">        NearByUserAttractionDTO nearByUserAttractionDTO = tourGuideService.getNearByAttractions(getUser(userName));</span>
+<span class="nc" id="L51">        logger.info(&quot;Call getNearbyAttractions endpoint (get user's nearby attractions)&quot;);</span>
+<span class="nc" id="L52">    	return nearByUserAttractionDTO;</span>
     }
     
     @RequestMapping(&quot;/getRewards&quot;) 
     public String getRewards(@RequestParam String userName) {
-<span class="nc" id="L56">    	return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));</span>
+<span class="nc" id="L57">    	return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));</span>
     }
 
     /**
@@ -64,9 +65,9 @@ import tripPricer.Provider;
      */
     @RequestMapping(&quot;/getAllCurrentLocations&quot;)
     public Map&lt;String, Location&gt; getAllCurrentLocations() {
-<span class="nc" id="L67">        Map&lt;String, Location&gt; currentLocations = tourGuideService.getAllCurrentLocations();</span>
-<span class="nc" id="L68">        logger.info(&quot;Call getAllCurrentLocations endpoint (get all users locations)&quot;);</span>
-<span class="nc" id="L69">    	return currentLocations;</span>
+<span class="nc" id="L68">        Map&lt;String, Location&gt; currentLocations = tourGuideService.getAllCurrentLocations();</span>
+<span class="nc" id="L69">        logger.info(&quot;Call getAllCurrentLocations endpoint (get all users locations)&quot;);</span>
+<span class="nc" id="L70">    	return currentLocations;</span>
     }
 
     /**
@@ -76,9 +77,9 @@ import tripPricer.Provider;
      */
     @RequestMapping(&quot;/getTripDeals&quot;)
     public List&lt;Provider&gt; getTripDeals(@RequestParam String userName) {
-<span class="nc" id="L79">    	List&lt;Provider&gt; providers = tourGuideService.getTripDeals(getUser(userName));</span>
-<span class="nc" id="L80">        logger.info(&quot;Call getTripDeals endpoint (get user's personalized trip deals)&quot;);</span>
-<span class="nc" id="L81">    	return providers;</span>
+<span class="nc" id="L80">    	List&lt;Provider&gt; providers = tourGuideService.getTripDeals(getUser(userName));</span>
+<span class="nc" id="L81">        logger.info(&quot;Call getTripDeals endpoint (get user's personalized trip deals)&quot;);</span>
+<span class="nc" id="L82">    	return providers;</span>
     }
 
     /**
@@ -90,9 +91,9 @@ import tripPricer.Provider;
     @RequestMapping(&quot;/setUserPreferences&quot;)
     public Map&lt;String, UserPreferencesDTO&gt; setUserPreferences(@RequestParam String userName,
                                      @RequestBody UserPreferencesDTO userPreferences) {
-<span class="nc" id="L93">        Map&lt;String, UserPreferencesDTO&gt; userUpdated = tourGuideService.setUserPreferences(userName, userPreferences);</span>
-<span class="nc" id="L94">        logger.info(&quot;Call setUserPreferences endpoint&quot;);</span>
-<span class="nc" id="L95">        return userUpdated;</span>
+<span class="nc" id="L94">        Map&lt;String, UserPreferencesDTO&gt; userUpdated = tourGuideService.setUserPreferences(userName, userPreferences);</span>
+<span class="nc" id="L95">        logger.info(&quot;Call setUserPreferences endpoint&quot;);</span>
+<span class="nc" id="L96">        return userUpdated;</span>
     }
 
     /**
@@ -102,14 +103,14 @@ import tripPricer.Provider;
      */
     @RequestMapping(&quot;/getUserPreferences&quot;)
     public UserPreferencesDTO getUserPreferences(@RequestParam String userName) {
-<span class="nc" id="L105">        User user = tourGuideService.getUser(userName);</span>
-<span class="nc" id="L106">        UserPreferencesDTO userPreferences = UserPreferencesDTO.convertToDTO(user.getUserPreferences());</span>
-<span class="nc" id="L107">        logger.info(&quot;Call getUserPreferences endpoint&quot;);</span>
-<span class="nc" id="L108">        return userPreferences;</span>
+<span class="nc" id="L106">        User user = tourGuideService.getUser(userName);</span>
+<span class="nc" id="L107">        UserPreferencesDTO userPreferences = UserPreferencesDTO.convertToDTO(user.getUserPreferences());</span>
+<span class="nc" id="L108">        logger.info(&quot;Call getUserPreferences endpoint&quot;);</span>
+<span class="nc" id="L109">        return userPreferences;</span>
     }
     
     private User getUser(String userName) {
-<span class="nc" id="L112">    	return tourGuideService.getUser(userName);</span>
+<span class="nc" id="L113">    	return tourGuideService.getUser(userName);</span>
     }
    
 
