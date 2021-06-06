@@ -1,6 +1,6 @@
 package tourGuide.web.dto;
 
-import gpsUtil.location.VisitedLocation;
+import tourGuide.domain.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourGuide.domain.NearByAttraction;
 import tourGuide.domain.User;
@@ -29,6 +29,9 @@ public class NearByUserAttractionDTO {
         this.userLat = userLocation.location.latitude;
         this.userLong = userLocation.location.longitude;
         convertNearByLocationToDTO(user, tourist_attractions, rewardCentral);
+    }
+
+    public NearByUserAttractionDTO(User user, tourGuide.domain.VisitedLocation visitedLocation, ArrayList<NearByAttraction> tourist_attractions, RewardCentral rewardCentral) {
     }
 
 

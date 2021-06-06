@@ -10,9 +10,14 @@ import org.apache.commons.lang3.time.StopWatch;
 //import org.junit.Ignore;
 //import org.junit.Test;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.VisitedLocation;
+import org.springframework.beans.factory.annotation.Autowired;
+import tourGuide.configuration.MicroserviceProperties;
+import tourGuide.service.restTemplateService.GpsUtilRestService;
+import tourGuide.tool.GpsUtilLocal;
+import tourGuide.tool.ListTools;
+import tourGuide.domain.Attraction;
+import tourGuide.domain.Location;
+import tourGuide.domain.VisitedLocation;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,6 +31,12 @@ import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.domain.User;
 
+/**
+ * <b>Important: Need Microservice GpsUtil</b>
+ * <p>Docker has to be active to load in container GpsUtil Microservice Project</p>
+ * <p>You can pass over the docker resource by using the application in local mode: turn MicroserviceProperties.dockerActive to false</p>
+ * @see MicroserviceProperties#getDockerActive()
+ */
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -34,6 +45,9 @@ public class TestPerformance {
 	private Logger logger = LoggerFactory.getLogger(TestPerformance.class);
 
 	private ExecutorService executorService;
+
+	@Autowired
+	private GpsUtilRestService gpsUtilRestService;
 	
 	/*
 	 * A note on performance improvements:
@@ -97,12 +111,12 @@ public class TestPerformance {
 	@ParameterizedTest(name = "For {0} User(s)")
 	@CsvSource({"1000"})//,"1000","5000","10000","50000","100000"})
 	public void highVolumeTrackLocation(int userNumber) {
-		GpsUtil gpsUtil = new GpsUtil();
+		GpsUtilLocal gpsUtil = new GpsUtilLocal();
 		RewardCentral rewardCentral = new RewardCentral();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtil, gpsUtilRestService, new RewardCentral());
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
 		InternalTestHelper.setInternalUserNumber(userNumber);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, rewardCentral);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, gpsUtilRestService, rewardsService, rewardCentral);
 
 		List<User> allUsers = new ArrayList<>();
 		allUsers = tourGuideService.getAllUsers();
@@ -129,17 +143,17 @@ public class TestPerformance {
 	@CsvSource({"1000"})//,"1000","5000","10000","50000","100000"})
 	public void highVolumeGetRewards(int userNumber) {
 		//GIVEN
-		GpsUtil gpsUtil = new GpsUtil();
+		GpsUtilLocal gpsUtil = new GpsUtilLocal();
 		RewardCentral rewardCentral = new RewardCentral();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtil, gpsUtilRestService, new RewardCentral());
 
 		// Users should be incremented up to 100,000, and test finishes within 20 minutes
 		InternalTestHelper.setInternalUserNumber(userNumber);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, rewardCentral);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, gpsUtilRestService, rewardsService, rewardCentral);
 		
-	    Attraction attraction = gpsUtil.getAttractions().get(0);
+	    Attraction attraction = ListTools.getAttractions().get(0);
 		List<User> allUsers = new ArrayList<>();
 		allUsers = tourGuideService.getAllUsers();
 
@@ -147,7 +161,7 @@ public class TestPerformance {
 		allUsers.parallelStream().forEach(
 				(user) -> {
 					Runnable runnableTask = () -> {
-						user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
+						user.addToVisitedLocations(new VisitedLocation(user.getUserId(), new Location(attraction.longitude, attraction.latitude), new Date()));
 						rewardsService.calculateRewards(user);
 						assertTrue(user.getUserRewards().size() > 0);
 						System.out.println("ok passed");

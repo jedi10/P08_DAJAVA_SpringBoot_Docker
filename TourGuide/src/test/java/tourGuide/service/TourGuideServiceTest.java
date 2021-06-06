@@ -1,8 +1,12 @@
 package tourGuide.service;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import tourGuide.configuration.MicroserviceProperties;
+import tourGuide.service.restTemplateService.GpsUtilRestService;
+import tourGuide.tool.GpsUtilLocal;
+import tourGuide.domain.Location;
+import tourGuide.domain.VisitedLocation;
 import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,21 +28,32 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * <b>Important: Need Microservice GpsUtil</b>
+ * <p>Docker has to be active to load in container GpsUtil Microservice Project</p>
+ * <p>You can pass over the docker resource by using the application in local mode: turn MicroserviceProperties.dockerActive to false</p>
+ * @see MicroserviceProperties#getDockerActive()
+ */
+@SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class TourGuideServiceTest {
 
-    private GpsUtil gpsUtil;
+    private GpsUtilLocal gpsUtilLocal;
+
+    @Autowired
+    private GpsUtilRestService gpsUtilRestService;
     private RewardCentral rewardCentral;
     private RewardsService rewardsService;
     private TourGuideService tourGuideService;
 
     @BeforeEach
     private void beforeEach(){
-        gpsUtil = new GpsUtil();
+        gpsUtilLocal = new GpsUtilLocal();
         rewardCentral = new RewardCentral();
-        rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+        rewardsService = new RewardsService(gpsUtilLocal, gpsUtilRestService, new RewardCentral());
         InternalTestHelper.setInternalUserNumber(0);
-        tourGuideService = new TourGuideService(gpsUtil, rewardsService, rewardCentral);
+        tourGuideService = new TourGuideService(gpsUtilLocal, gpsUtilRestService, rewardsService, rewardCentral);
+        tourGuideService.microserviceProperties = new MicroserviceProperties();
 
     }
     @AfterEach
@@ -46,9 +61,12 @@ class TourGuideServiceTest {
         tourGuideService = null;
         rewardsService = null;
         rewardCentral = null;
-        gpsUtil = null;
+        gpsUtilLocal = null;
     }
 
+    /**
+     * <b>Important: Need Microservice GpsUtil</b>
+     */
     @Order(1)
     @Test
     void getAllCurrentLocations() {
@@ -89,6 +107,9 @@ class TourGuideServiceTest {
                 currentLocationsMap.get(user2Result.getUserId().toString()).longitude, 0.0);
     }
 
+    /**
+     * <b>Important: Need Microservice GpsUtil</b>
+     */
     @Order(2)
     @Test
     public void getUserLocation() {
@@ -133,6 +154,9 @@ class TourGuideServiceTest {
         assertTrue(allUsers.contains(user2));
     }
 
+    /**
+     * <b>Important: Need Microservice GpsUtil</b>
+     */
     @Order(5)
     @Test
     public void trackUser() {
@@ -144,7 +168,9 @@ class TourGuideServiceTest {
         assertEquals(user.getUserId(), visitedLocation.userId);
     }
 
-    //@Ignore // Not yet implemented
+    /**
+     * <b>Important: Need Microservice GpsUtil</b>
+     */
     @Order(6)
     @Test
     public void getNearbyAttractions() {

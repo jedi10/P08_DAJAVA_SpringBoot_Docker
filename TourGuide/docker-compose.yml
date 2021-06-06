@@ -1,0 +1,31 @@
+version : "3.8"
+services :
+  tourGuide :
+    image: tourguide
+    build :
+      context: ./
+      dockerfile: ./dockerfile
+    container_name: tourguide
+    ports :
+      - "127.0.0.1:8081:8081"
+    networks:
+      - default
+    depends_on:
+      gpsUtil:
+        condition: service_started
+
+  gpsUtil:
+    image : gpsutil
+    build :
+      context: ../GPSUtils
+      dockerfile: ../GPSUtils/dockerfile
+    container_name: gpsutil
+    ports :
+      - "127.0.0.1:8090:8090"
+
+####https://stackoverflow.com/questions/27068596/how-to-include-files-outside-of-dockers-build-context
+#### https://stackoverflow.com/questions/60280192/how-to-build-docker-image-by-docker-compose-yml
+#### https://vsupalov.com/docker-env-vars/
+####https://www.techrunnr.com/build-and-run-docker-containers-using-docker-compose/
+###https://openclassrooms.com/fr/courses/2035766-optimisez-votre-deploiement-en-creant-des-conteneurs-avec-docker/6211677-creez-un-fichier-docker-compose-pour-orchestrer-vos-conteneurs
+###https://dev.to/azure/how-you-can-learn-docker-from-the-beginning-covers-docker-compose-volumes-databases-in-the-cloud-and-much-more-8mg

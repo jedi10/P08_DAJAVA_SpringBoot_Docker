@@ -2,8 +2,9 @@ package tourGuide;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-import gpsUtil.location.Location;
+import tourGuide.domain.Location;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jsoniter.output.JsonStream;
 
-import gpsUtil.location.VisitedLocation;
+import tourGuide.domain.VisitedLocation;
 import tourGuide.service.TourGuideService;
 import tourGuide.domain.User;
 import tourGuide.web.dto.NearByUserAttractionDTO;

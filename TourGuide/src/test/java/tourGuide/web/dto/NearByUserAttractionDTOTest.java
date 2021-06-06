@@ -1,8 +1,8 @@
 package tourGuide.web.dto;
 
-import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
+import tourGuide.domain.Attraction;
+import tourGuide.domain.Location;
+import tourGuide.domain.VisitedLocation;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
