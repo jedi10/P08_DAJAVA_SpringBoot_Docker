@@ -55,7 +55,6 @@ public class RewardsService {
 		} else {
 			attractions.addAll(gpsUtilRestService.getAttractions());
 		}
-		attractions.addAll(ListTools.getAttractions());
 		userLocations.addAll(user.getVisitedLocations());
 
 		userLocations.forEach((visitedLocation) -> {
