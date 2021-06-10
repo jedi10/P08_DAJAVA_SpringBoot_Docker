@@ -21,6 +21,7 @@ import tourGuide.configuration.MicroserviceProperties;
 import tourGuide.domain.Attraction;
 import tourGuide.domain.Location;
 import tourGuide.domain.VisitedLocation;
+import tourGuide.tool.ListTools;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -136,6 +137,24 @@ class GpsUtilRestServiceTest {
 
         //Then
         this.mockServer.verify();
+        assertNotNull(attractionsResult);
+        assertEquals(attractionsGiven, attractionsResult);
+    }
+
+    @Order(4)
+    @Test
+    public void getAttractions_cacheTest() throws JsonProcessingException {
+        //Given
+        List<Attraction> attractionsGiven = new ArrayList();
+        attractionsGiven.add(new Attraction("Disneyland", "Anaheim", "CA", 33.817595D, -117.922008D));
+        attractionsGiven.add(new Attraction("Jackson Hole", "Jackson Hole", "WY", 43.582767D, -110.821999D));
+        attractionsGiven.add(new Attraction("Mojave National Preserve", "Kelso", "CA", 35.141689D, -115.510399D));
+        gpsUtilRestService.setCacheAttractionList(attractionsGiven);
+
+        //When
+        List<Attraction> attractionsResult = gpsUtilRestService.getAttractions();
+
+        //Then
         assertNotNull(attractionsResult);
         assertEquals(attractionsGiven, attractionsResult);
     }

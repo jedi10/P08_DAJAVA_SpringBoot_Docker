@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,9 @@ import tourGuide.configuration.MicroserviceProperties;
 import tourGuide.domain.Attraction;
 import tourGuide.domain.VisitedLocation;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -28,6 +32,9 @@ public class GpsUtilRestService {
     //final String defaultGpsUtilRootUrl = "http://localhost:8090";
     @Autowired
     RestTemplate restTemplate;
+
+    private List<Attraction> attractionListCache = null;
+    private LocalDateTime attractionListTimeRefresh;
 
     public GpsUtilRestService() {
         microserviceProperties = new MicroserviceProperties();
@@ -79,6 +86,10 @@ public class GpsUtilRestService {
      */
     public List<Attraction> getAttractions() {
         List<Attraction> result = null;
+        if (!cacheForAttractionListNeedRefresh()){
+            logger.debug("Call to "+className+".getAttractions() from cache");
+            return this.attractionListCache;
+        }
         logger.debug("Call to "+className+".getAttractions()");
 
         StringBuilder httpUrl = new StringBuilder();
@@ -101,7 +112,8 @@ public class GpsUtilRestService {
              new ParameterizedTypeReference<>() {}
              );**/
             if (responseEntity != null && responseEntity.getBody() != null){
-                result = Arrays.asList(responseEntity.getBody());
+                setCacheAttractionList(Arrays.asList(responseEntity.getBody()));
+                result = this.attractionListCache;
                 logger.debug("Found {} Attractions", result.size());
             } else {
                 logger.debug("Return Zero Attraction");
@@ -114,6 +126,27 @@ public class GpsUtilRestService {
             logger.error(errorMessage);
             return null;
         }
+    }
+
+    public void setCacheAttractionList(List<Attraction> attractionListCache){
+        this.attractionListCache = attractionListCache;
+        this.attractionListTimeRefresh = LocalDateTime.now();
+    }
+
+    private boolean cacheForAttractionListNeedRefresh(){
+        Boolean result = true;
+        if (this.attractionListCache != null){
+            Duration duration = Duration.between(this.attractionListTimeRefresh, LocalDateTime.now());
+            if (duration.toMinutes() < 10){
+                result = false;
+            }
+        }
+        return result;
+    }
+
+    private static Period getPeriod(LocalDateTime dob, LocalDateTime now) {
+        //https://stackoverflow.com/questions/25747499/java-8-difference-between-two-localdatetime-in-multiple-units
+        return Period.between(dob.toLocalDate(), now.toLocalDate());
     }
 }
 
