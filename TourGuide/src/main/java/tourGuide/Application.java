@@ -12,7 +12,9 @@ public class Application {
         SpringApplication.run(Application.class, args);
         Locale.setDefault(new Locale("en", "US"));
         Locale defaultLocale = Locale.getDefault();
-        System.out.println(defaultLocale);
+        System.out.println(String.format(
+                "TourGuide has been launched with %s localisation",
+                defaultLocale));
         //System.out.println(locale.toString());
     }
 
