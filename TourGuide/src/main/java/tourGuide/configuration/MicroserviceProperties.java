@@ -24,3 +24,4 @@ public class MicroserviceProperties {
 
 //https://stackoverflow.com/questions/32058814/spring-boot-custom-variables-in-application-properties
 //https://www.baeldung.com/intellij-resolve-spring-boot-configuration-properties
+//windows\system32\drivers\etc.
