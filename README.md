@@ -4,18 +4,27 @@
 
 TourGuide is a travel and entertainment application.
 
+#Quick Application Launch
+* Build tourguide and gpsutil project with gradle.
+* Install docker
+* Open a console in tourguide project and type:
+
+      docker compose up -d
+    
+That's all. A _docker-compose.yml_ file use the _dockerfile_ of each project to build docker image and container.
+
 ## You can get :
 * All User's UUID and their location
-  * http://localhost:8080/getAllCurrentLocations
+  * http://localhost:8081/getAllCurrentLocations
 * User's nearby attractions
-  * http://localhost:8080/getNearbyAttractions?userName=internalUser0 
+  * http://localhost:8081/getNearbyAttractions?userName=internalUser0 
 * User's trip deals
-  * http://localhost:8080/getTripDeals?userName=internalUser0
+  * http://localhost:8081/getTripDeals?userName=internalUser0
 * User's trip preferences
-  * http://localhost:8080/getUserPreferences?userName=internalUser0
+  * http://localhost:8081/getUserPreferences?userName=internalUser0
 ## You can set (POST):
 * User's trip preferences
-  * http://localhost:8080/setUserPreferences?userName=internalUser0
+  * http://localhost:8081/setUserPreferences?userName=internalUser0
   * user's preferences JSON File (can be used with Postman Software)
    
         {
@@ -28,8 +37,19 @@ TourGuide is a travel and entertainment application.
           "numberOfAdults": 1,
           "numberOfChildren": 0
         }  
+        
+## GPSUtil Microservice
+ You can get:
+ * User location by just giving his UUID:
+   * http://localhost:8090/userLocation?userId=fded86b9-9c2d-43fd-ba02-65b7d7419645
+ * All attractions:
+   * http://localhost:8090/attractions
  
-#Project Prerequisites and dependencies 
+#Project Prerequisites and dependencies
+The project need Java JDK 11 or newer. Open JDK is recommended: https://adoptopenjdk.net
+
+The project use [Spring Boot 2.4.4](https://start.spring.io) with Gradle 5.6. 
+ 
     Docker 20.10.6+
     Java 11 JDK (or +)
     SpringBoot 2.4.4 
@@ -37,11 +57,12 @@ TourGuide is a travel and entertainment application.
     junit-jupiter-api 5.7.1
     pojo-tester 0.7.6
     lombok 1.18.20
+    
 Intellij idea: don't forget to enable annotation processors for lombok. 
 _Settings/Build-execution-deployment/compiler/annotationProcessors_ 
-#Run app (on local port 8080)
+#Run app (on local port 8081)
 ## with Gradle
-    gradle bootRun    
+    gradle bootRun   
 
 #Containerize main app (on local port 8081)
 ##Build the Jar of the project:
@@ -84,5 +105,7 @@ We add a _docker-compose.yml_ in tourguide project to be able to use Docker Comp
     docker compose logs -f --tail 5  (show docker container logs)
     docker compose <stop || start>
     docker compose down  (resource destruction)
+    docker rmi -f gpsutil
+    docker rmi -f tourguide
 * _-d_ run the container in detached mode = in the background
 
