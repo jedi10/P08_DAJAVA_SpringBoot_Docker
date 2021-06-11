@@ -1,10 +1,10 @@
 # P08_DAJAVA_SpringBoot_Docker
 
-##Project Presentation
+## Project Presentation
 
 TourGuide is a travel and entertainment application.
 
-##Quick Application Launch
+## Quick Application Launch
 * Build tourguide and gpsutil project with gradle.
 * Install docker
 * Open a console in tourguide project and type:
@@ -45,7 +45,7 @@ That's all. A _docker-compose.yml_ file use the _dockerfile_ of each project to 
  * All attractions:
    * http://localhost:8090/attractions
  
-##Project Prerequisites and dependencies
+## Project Prerequisites and dependencies
 The project need Java JDK 11 or newer. Open JDK is recommended: https://adoptopenjdk.net
 
 The project use [Spring Boot 2.4.4](https://start.spring.io) with Gradle 5.6. 
@@ -60,23 +60,23 @@ The project use [Spring Boot 2.4.4](https://start.spring.io) with Gradle 5.6.
     
 Intellij idea: don't forget to enable annotation processors for lombok. 
 _Settings/Build-execution-deployment/compiler/annotationProcessors_ 
-##Run app (on local port 8081)
+## Run app (on local port 8081)
 ### with Gradle
     gradle bootRun   
 
-##Containerize main app (on local port 8081)
-###Build the Jar of the project:
+## Containerize main app (on local port 8081)
+### Build the Jar of the project:
 To get a _.jar_ file of the project in the _build/libs/_ folder:
-####with console
+#### with console
     gradle clean
     gradle build
-####with intellij
+#### with intellij
 * Go to the gradle right vertical panel, expand it.
 * Go to _Tasks/build_ 
      * double click on _clean_
      * double click on _build_
 
-###Make a docker's image and run it
+### Make a docker's image and run it
 At project root:
 
     docker build -t tourguide .
@@ -87,7 +87,7 @@ At project root:
 * _tourguide_ the image to use
 
 [source](https://docs.docker.com/get-started/)    
-###Stop and delete docker's container and image
+### Stop and delete docker's container and image
 At project root:
 
     docker container ls -a (to retrieve container_id or name)
@@ -95,7 +95,7 @@ At project root:
     docker container rm <container_id || container_name>
     docker rmi -f tourguide
 
-##Containerize main app and all microservice 
+## Containerize main app and all microservice 
 We add a _docker-compose.yml_ in tourguide project to be able to use Docker Compose CLI. 
 
     docker-compose --version
