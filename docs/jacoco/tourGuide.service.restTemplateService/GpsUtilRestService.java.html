@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -16,24 +17,30 @@ import tourGuide.configuration.MicroserviceProperties;
 import tourGuide.domain.Attraction;
 import tourGuide.domain.VisitedLocation;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class GpsUtilRestService {
-<span class="fc" id="L25">    private final Logger logger = LoggerFactory.getLogger(GpsUtilRestService.class);</span>
+<span class="fc" id="L29">    private final Logger logger = LoggerFactory.getLogger(GpsUtilRestService.class);</span>
 
     MicroserviceProperties microserviceProperties;
     //final String defaultGpsUtilRootUrl = &quot;http://localhost:8090&quot;;
     @Autowired
     RestTemplate restTemplate;
 
-<span class="fc" id="L32">    public GpsUtilRestService() {</span>
-<span class="fc" id="L33">        microserviceProperties = new MicroserviceProperties();</span>
-<span class="fc" id="L34">    }</span>
+<span class="fc" id="L36">    private List&lt;Attraction&gt; attractionListCache = null;</span>
+    private LocalDateTime attractionListTimeRefresh;
 
-<span class="fc" id="L36">    public static final String className = GpsUtilRestService.class.getSimpleName();</span>
+<span class="fc" id="L39">    public GpsUtilRestService() {</span>
+<span class="fc" id="L40">        microserviceProperties = new MicroserviceProperties();</span>
+<span class="fc" id="L41">    }</span>
+
+<span class="fc" id="L43">    public static final String className = GpsUtilRestService.class.getSimpleName();</span>
     public static final String userLocationURL = &quot;/userLocation&quot;;
     public static final String attractionsURL = &quot;/attractions&quot;;
 
@@ -44,31 +51,31 @@ public class GpsUtilRestService {
      * @return VisitedLocation for given user
      */
     public VisitedLocation getUserLocation(UUID userId) {
-<span class="fc" id="L47">        String logMessage = String.format(&quot;Call to %s.getUserLocation(%s)&quot;,</span>
+<span class="fc" id="L54">        String logMessage = String.format(&quot;Call to %s.getUserLocation(%s)&quot;,</span>
                 className,
                 userId);
-<span class="fc" id="L50">        logger.debug(logMessage);</span>
+<span class="fc" id="L57">        logger.debug(logMessage);</span>
         //System.out.print(&quot;url: &quot;+ microserviceProperties.getAddress() + microserviceProperties.getGpsutilPort());
-<span class="fc" id="L52">        String httpUrl = String.format(&quot;%s%s%s&quot;,</span>
-<span class="fc" id="L53">                microserviceProperties.getAddress(),</span>
-<span class="fc" id="L54">                microserviceProperties.getGpsutilPort(),</span>
+<span class="fc" id="L59">        String httpUrl = String.format(&quot;%s%s%s&quot;,</span>
+<span class="fc" id="L60">                microserviceProperties.getAddress(),</span>
+<span class="fc" id="L61">                microserviceProperties.getGpsutilPort(),</span>
                 userLocationURL);
-<span class="fc" id="L56">        UriComponentsBuilder uriComponentsBuilder =</span>
-<span class="fc" id="L57">                UriComponentsBuilder.fromHttpUrl(httpUrl).</span>
-<span class="fc" id="L58">                queryParam(&quot;userId&quot;, userId);</span>
-<span class="fc" id="L59">        String httpUri = uriComponentsBuilder.toUriString();</span>
+<span class="fc" id="L63">        UriComponentsBuilder uriComponentsBuilder =</span>
+<span class="fc" id="L64">                UriComponentsBuilder.fromHttpUrl(httpUrl).</span>
+<span class="fc" id="L65">                queryParam(&quot;userId&quot;, userId);</span>
+<span class="fc" id="L66">        String httpUri = uriComponentsBuilder.toUriString();</span>
 
         try {
-<span class="fc" id="L62">            ResponseEntity&lt;VisitedLocation&gt; responseEntity = restTemplate.getForEntity(</span>
+<span class="fc" id="L69">            ResponseEntity&lt;VisitedLocation&gt; responseEntity = restTemplate.getForEntity(</span>
                             httpUri,
                             VisitedLocation.class);
-<span class="fc" id="L65">            return responseEntity.getBody();</span>
-<span class="nc" id="L66">        } catch (RestClientException exception) {</span>
-<span class="nc" id="L67">            String errorMessage = String.format(&quot;Exception during %s.getUserLocation : %s&quot;,</span>
+<span class="fc" id="L72">            return responseEntity.getBody();</span>
+<span class="nc" id="L73">        } catch (RestClientException exception) {</span>
+<span class="nc" id="L74">            String errorMessage = String.format(&quot;Exception during %s.getUserLocation : %s&quot;,</span>
                     className,
-<span class="nc" id="L69">                    exception.getMessage());</span>
-<span class="nc" id="L70">            logger.error(errorMessage);</span>
-<span class="nc" id="L71">            return null;</span>
+<span class="nc" id="L76">                    exception.getMessage());</span>
+<span class="nc" id="L77">            logger.error(errorMessage);</span>
+<span class="nc" id="L78">            return null;</span>
         }
     }
 
@@ -78,16 +85,20 @@ public class GpsUtilRestService {
      * @return list of attractions
      */
     public List&lt;Attraction&gt; getAttractions() {
-<span class="fc" id="L81">        List&lt;Attraction&gt; result = null;</span>
-<span class="fc" id="L82">        logger.debug(&quot;Call to &quot;+className+&quot;.getAttractions()&quot;);</span>
+<span class="fc" id="L88">        List&lt;Attraction&gt; result = null;</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        if (!cacheForAttractionListNeedRefresh()){</span>
+<span class="fc" id="L90">            logger.debug(&quot;Call to &quot;+className+&quot;.getAttractions() from cache&quot;);</span>
+<span class="fc" id="L91">            return this.attractionListCache;</span>
+        }
+<span class="fc" id="L93">        logger.debug(&quot;Call to &quot;+className+&quot;.getAttractions()&quot;);</span>
 
-<span class="fc" id="L84">        StringBuilder httpUrl = new StringBuilder();</span>
-<span class="fc" id="L85">        httpUrl.append(microserviceProperties.getAddress());</span>
-<span class="fc" id="L86">        httpUrl.append(microserviceProperties.getGpsutilPort());</span>
-<span class="fc" id="L87">        httpUrl.append(attractionsURL);</span>
+<span class="fc" id="L95">        StringBuilder httpUrl = new StringBuilder();</span>
+<span class="fc" id="L96">        httpUrl.append(microserviceProperties.getAddress());</span>
+<span class="fc" id="L97">        httpUrl.append(microserviceProperties.getGpsutilPort());</span>
+<span class="fc" id="L98">        httpUrl.append(attractionsURL);</span>
         try {
-<span class="fc" id="L89">            ResponseEntity&lt;Attraction[]&gt; responseEntity = restTemplate.getForEntity(</span>
-<span class="fc" id="L90">                    httpUrl.toString(),</span>
+<span class="fc" id="L100">            ResponseEntity&lt;Attraction[]&gt; responseEntity = restTemplate.getForEntity(</span>
+<span class="fc" id="L101">                    httpUrl.toString(),</span>
                     Attraction[].class);
             /**ResponseEntity&lt;Attraction[]&gt; responseEntity = restTemplate.exchange(
                     httpUrl.toString(),
@@ -100,20 +111,42 @@ public class GpsUtilRestService {
              null,//https://springbootdev.com/2017/11/21/spring-resttemplate-exchange-method/
              new ParameterizedTypeReference&lt;&gt;() {}
              );**/
-<span class="pc bpc" id="L103" title="2 of 4 branches missed.">            if (responseEntity != null &amp;&amp; responseEntity.getBody() != null){</span>
-<span class="fc" id="L104">                result = Arrays.asList(responseEntity.getBody());</span>
-<span class="fc" id="L105">                logger.debug(&quot;Found {} Attractions&quot;, result.size());</span>
+<span class="pc bpc" id="L114" title="2 of 4 branches missed.">            if (responseEntity != null &amp;&amp; responseEntity.getBody() != null){</span>
+<span class="fc" id="L115">                setCacheAttractionList(Arrays.asList(responseEntity.getBody()));</span>
+<span class="fc" id="L116">                result = this.attractionListCache;</span>
+<span class="fc" id="L117">                logger.debug(&quot;Found {} Attractions&quot;, result.size());</span>
             } else {
-<span class="nc" id="L107">                logger.debug(&quot;Return Zero Attraction&quot;);</span>
+<span class="nc" id="L119">                logger.debug(&quot;Return Zero Attraction&quot;);</span>
             }
-<span class="fc" id="L109">            return result;</span>
-<span class="nc" id="L110">        } catch (RestClientException exception) {</span>
-<span class="nc" id="L111">            String errorMessage = String.format(&quot;Exception during %s.getAttractions : %s&quot;,</span>
+<span class="fc" id="L121">            return result;</span>
+<span class="nc" id="L122">        } catch (RestClientException exception) {</span>
+<span class="nc" id="L123">            String errorMessage = String.format(&quot;Exception during %s.getAttractions : %s&quot;,</span>
                     className,
-<span class="nc" id="L113">                    exception.getMessage());</span>
-<span class="nc" id="L114">            logger.error(errorMessage);</span>
-<span class="nc" id="L115">            return null;</span>
+<span class="nc" id="L125">                    exception.getMessage());</span>
+<span class="nc" id="L126">            logger.error(errorMessage);</span>
+<span class="nc" id="L127">            return null;</span>
         }
+    }
+
+    public void setCacheAttractionList(List&lt;Attraction&gt; attractionListCache){
+<span class="fc" id="L132">        this.attractionListCache = attractionListCache;</span>
+<span class="fc" id="L133">        this.attractionListTimeRefresh = LocalDateTime.now();</span>
+<span class="fc" id="L134">    }</span>
+
+    private boolean cacheForAttractionListNeedRefresh(){
+<span class="fc" id="L137">        Boolean result = true;</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">        if (this.attractionListCache != null){</span>
+<span class="fc" id="L139">            Duration duration = Duration.between(this.attractionListTimeRefresh, LocalDateTime.now());</span>
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">            if (duration.toMinutes() &lt; 10){</span>
+<span class="fc" id="L141">                result = false;</span>
+            }
+        }
+<span class="fc" id="L144">        return result;</span>
+    }
+
+    private static Period getPeriod(LocalDateTime dob, LocalDateTime now) {
+        //https://stackoverflow.com/questions/25747499/java-8-difference-between-two-localdatetime-in-multiple-units
+<span class="nc" id="L149">        return Period.between(dob.toLocalDate(), now.toLocalDate());</span>
     }
 }
 

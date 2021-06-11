@@ -212,11 +212,11 @@ public class TourGuideService {
 
 		List&lt;NearByAttraction&gt; nearByAttractionsSorted;
 
-<span class="fc" id="L215">		List&lt;Attraction&gt; attractionFullList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L215">		List&lt;Attraction&gt; attractionFullList = null;</span>
 <span class="pc bpc" id="L216" title="1 of 2 branches missed.">		if (!microserviceProperties.getDockerActive().equals(&quot;true&quot;)){</span>
-<span class="nc" id="L217">			attractionFullList.addAll(ListTools.getAttractions());</span>
+<span class="nc" id="L217">			attractionFullList = ListTools.getAttractions();</span>
 		} else {
-<span class="fc" id="L219">			attractionFullList.addAll(gpsUtilRestService.getAttractions());</span>
+<span class="fc" id="L219">			attractionFullList = this.gpsUtilRestService.getAttractions();</span>
 		}
 <span class="fc bfc" id="L221" title="All 2 branches covered.">		for(Attraction attraction : attractionFullList) {</span>
 <span class="fc" id="L222">			Double distance = rewardsService.getDistance(</span>
