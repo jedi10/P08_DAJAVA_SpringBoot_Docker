@@ -11,7 +11,8 @@ TourGuide is a travel and entertainment application.
 
       docker compose up -d
     
-That's all. A _docker-compose.yml_ file use the _dockerfile_ of each project to build docker image and container.
+That's all.
+ A _docker-compose.yml_ file use the _dockerfile_ of each project to build docker image and container.
 
 ### You can get :
 * All User's UUID and their location
@@ -44,7 +45,11 @@ That's all. A _docker-compose.yml_ file use the _dockerfile_ of each project to 
    * http://localhost:8090/userLocation?userId=fded86b9-9c2d-43fd-ba02-65b7d7419645
  * All attractions:
    * http://localhost:8090/attractions
+   
+### WARNING for TourGuide Test
  
+By default, TourGuide Test ask for real microservice. If you don't want to give this resource, just change the MicroserviceProperties.dockerActive to false. 
+  
 ## Project Prerequisites and dependencies
 The project need Java JDK 11 or newer. Open JDK is recommended: https://adoptopenjdk.net
 
