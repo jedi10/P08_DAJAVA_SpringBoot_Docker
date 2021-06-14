@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TourGuideModule.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TourGuide</a> &gt; <a href="index.source.html" class="el_package">tourGuide.configuration</a> &gt; <span class="el_source">TourGuideModule.java</span></div><h1>TourGuideModule.java</h1><pre class="source lang-java linenums">package tourGuide.configuration;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import org.springframework.context.annotation.Primary;
+import org.springframework.web.client.RestTemplate;
+import tourGuide.configuration.MicroserviceProperties;
+import tourGuide.service.restTemplateService.GpsUtilRestService;
+import tourGuide.tool.GpsUtilLocal;
+import rewardCentral.RewardCentral;
+import tourGuide.service.RewardsService;
+
+import java.time.Duration;
+
+@Configuration
+@EnableConfigurationProperties(MicroserviceProperties.class)
+<span class="fc" id="L22">public class TourGuideModule {</span>
+	
+	@Bean
+	public GpsUtilLocal getGpsUtil() {
+<span class="fc" id="L26">		return new GpsUtilLocal();</span>
+	}
+	
+	@Bean
+	public RewardsService getRewardsService() {
+<span class="fc" id="L31">		return new RewardsService(getGpsUtil(), getGpsUtilService(), getRewardCentral());</span>
+	}
+	
+	@Bean
+	public RewardCentral getRewardCentral() {
+<span class="fc" id="L36">		return new RewardCentral();</span>
+	}
+
+	@Bean(name=&quot;defaultRest&quot;)
+	@Primary
+	public RestTemplate requestRestTemplate(RestTemplateBuilder restTemplateBuilder) {
+<span class="fc" id="L42">		return restTemplateBuilder</span>
+<span class="fc" id="L43">				.setConnectTimeout(Duration.ofSeconds(2))</span>
+<span class="fc" id="L44">				.setReadTimeout(Duration.ofSeconds(2))</span>
+<span class="fc" id="L45">				.build();</span>
+	}
+
+	@Bean(name=&quot;requestRestTemplate2&quot;)
+	public RestTemplate requestRestTemplate2(RestTemplateBuilder restTemplateBuilder) {
+<span class="fc" id="L50">		return restTemplateBuilder</span>
+<span class="fc" id="L51">				.setConnectTimeout(Duration.ofSeconds(2))</span>
+<span class="fc" id="L52">				.setReadTimeout(Duration.ofSeconds(2))</span>
+<span class="fc" id="L53">				.build();</span>
+	}
+
+	@Bean
+	public GpsUtilRestService getGpsUtilService() {
+<span class="fc" id="L58">		return new GpsUtilRestService();</span>
+	}
+
+}
+
+
+//https://www.baeldung.com/spring-qualifier-annotation
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

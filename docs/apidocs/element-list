@@ -1,7 +1,9 @@
 tourGuide
+tourGuide.configuration
 tourGuide.domain
 tourGuide.helper
 tourGuide.service
+tourGuide.service.restTemplateService
 tourGuide.tool
 tourGuide.tracker
 tourGuide.web.dto

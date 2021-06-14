@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GpsUtilLocal.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TourGuide</a> &gt; <a href="index.source.html" class="el_package">tourGuide.tool</a> &gt; <span class="el_source">GpsUtilLocal.java</span></div><h1>GpsUtilLocal.java</h1><pre class="source lang-java linenums">package tourGuide.tool;
+
+import com.google.common.util.concurrent.RateLimiter;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import tourGuide.domain.Location;
+import tourGuide.domain.VisitedLocation;
+
+import java.util.Date;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+
+@Getter
+@Setter
+<span class="fc" id="L17">@AllArgsConstructor</span>
+public class GpsUtilLocal {
+
+<span class="fc" id="L20">    private static final RateLimiter rateLimiter = RateLimiter.create(1000.0D);</span>
+
+    public VisitedLocation getUserLocation(UUID userId) {
+<span class="nc" id="L23">        rateLimiter.acquire();</span>
+<span class="nc" id="L24">        this.sleep();</span>
+<span class="nc" id="L25">        double longitude = ThreadLocalRandom.current().nextDouble(-180.0D, 180.0D);</span>
+<span class="nc" id="L26">        longitude = Double.parseDouble(String.format(&quot;%.6f&quot;, longitude));</span>
+<span class="nc" id="L27">        double latitude = ThreadLocalRandom.current().nextDouble(-85.05112878D, 85.05112878D);</span>
+<span class="nc" id="L28">        latitude = Double.parseDouble(String.format(&quot;%.6f&quot;, latitude));</span>
+<span class="nc" id="L29">        VisitedLocation visitedLocation = new VisitedLocation(userId, new Location(latitude, longitude), new Date());</span>
+<span class="nc" id="L30">        return visitedLocation;</span>
+    }
+
+    private void sleep() {
+<span class="nc" id="L34">        int random = ThreadLocalRandom.current().nextInt(30, 100);</span>
+
+        try {
+<span class="nc" id="L37">            TimeUnit.MILLISECONDS.sleep((long)random);</span>
+<span class="nc" id="L38">        } catch (InterruptedException var3) {</span>
+<span class="nc" id="L39">        }</span>
+<span class="nc" id="L40">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

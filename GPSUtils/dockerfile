@@ -1,0 +1,10 @@
+# https://hub.docker.com/_/openjdk
+FROM openjdk:11
+#LABEL administrator="kyle10_dev@outlook.fr"
+ARG JAR_FILE=build/libs/*.jar
+COPY ${JAR_FILE} gpsUtil.jar
+ENTRYPOINT ["java","-jar","/gpsUtil.jar"]
+
+
+# https://mkyong.com/docker/docker-and-java-application-examples/
+# https://spring.io/guides/topicals/spring-boot-docker/

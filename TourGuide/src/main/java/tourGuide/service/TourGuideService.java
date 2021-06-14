@@ -8,16 +8,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.javamoney.moneta.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
+import tourGuide.configuration.MicroserviceProperties;
+import tourGuide.service.restTemplateService.GpsUtilRestService;
+import tourGuide.tool.GpsUtilLocal;
+import tourGuide.tool.ListTools;
+import tourGuide.domain.Attraction;
+import tourGuide.domain.Location;
+import tourGuide.domain.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourGuide.TourGuideController;
 import tourGuide.domain.NearByAttraction;
@@ -31,12 +33,14 @@ import tourGuide.web.dto.UserPreferencesDTO;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 
-import javax.money.Monetary;
-
 @Service
 public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
-	private final GpsUtil gpsUtil;
+
+	MicroserviceProperties microserviceProperties;
+
+	private final GpsUtilLocal gpsUtilLocal;
+	private final GpsUtilRestService gpsUtilRestService;
 	private final RewardsService rewardsService;
 	private final TripPricer tripPricer = new TripPricer();
 	private final RewardCentral rewardCentral;
@@ -64,11 +68,14 @@ public class TourGuideService {
 		}
 	}
 	
-	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService, RewardCentral rewardCentral) {
-		this.gpsUtil = gpsUtil;
+	public TourGuideService(GpsUtilLocal gpsUtil, GpsUtilRestService gpsUtilRestService,
+							RewardsService rewardsService, RewardCentral rewardCentral) {
+		this.gpsUtilLocal = gpsUtil;
+		this.gpsUtilRestService = gpsUtilRestService;
 		this.rewardCentral = rewardCentral;
 		this.rewardsService = rewardsService;
 		this.executorService = Executors.newFixedThreadPool(1500);//.newCachedThreadPool()
+		this.microserviceProperties = new MicroserviceProperties();
 		Locale.setDefault(new Locale("en", "US"));
 		
 		if(testMode) {
@@ -172,7 +179,12 @@ public class TourGuideService {
 
 	public VisitedLocation trackUserLocation(User user) {
 		//Task1 - random generator for longitude and latitude with TreadLocalRandom https://www.codeflow.site/fr/article/java-thread-local-random
-		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+		VisitedLocation visitedLocation = null;
+		if (!microserviceProperties.getDockerActive().equals("true")){
+			visitedLocation = gpsUtilLocal.getUserLocation(user.getUserId());
+		} else {
+			visitedLocation = gpsUtilRestService.getUserLocation(user.getUserId());
+		}
 		//Task2 - need visitedLocation to be created
 		user.addToVisitedLocations(visitedLocation);
 		//Task3 - need visited location to be referenced
@@ -200,7 +212,13 @@ public class TourGuideService {
 
 		List<NearByAttraction> nearByAttractionsSorted;
 
-		for(Attraction attraction : gpsUtil.getAttractions()) {
+		List<Attraction> attractionFullList = null;
+		if (!microserviceProperties.getDockerActive().equals("true")){
+			attractionFullList = ListTools.getAttractions();
+		} else {
+			attractionFullList = this.gpsUtilRestService.getAttractions();
+		}
+		for(Attraction attraction : attractionFullList) {
 			Double distance = rewardsService.getDistance(
 					new Location(attraction.longitude, attraction.latitude),
 					visitedLocation.location);
